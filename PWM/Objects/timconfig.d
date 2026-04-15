@@ -1,0 +1,31 @@
+.\objects\timconfig.o: Hard ware\TimConfig.c
+.\objects\timconfig.o: .\Start\stm32f10x.h
+.\objects\timconfig.o: .\Start\core_cm3.h
+.\objects\timconfig.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\timconfig.o: .\Start\system_stm32f10x.h
+.\objects\timconfig.o: .\User\stm32f10x_conf.h
+.\objects\timconfig.o: .\Library\stm32f10x_adc.h
+.\objects\timconfig.o: .\Start\stm32f10x.h
+.\objects\timconfig.o: .\Library\stm32f10x_bkp.h
+.\objects\timconfig.o: .\Library\stm32f10x_can.h
+.\objects\timconfig.o: .\Library\stm32f10x_cec.h
+.\objects\timconfig.o: .\Library\stm32f10x_crc.h
+.\objects\timconfig.o: .\Library\stm32f10x_dac.h
+.\objects\timconfig.o: .\Library\stm32f10x_dbgmcu.h
+.\objects\timconfig.o: .\Library\stm32f10x_dma.h
+.\objects\timconfig.o: .\Library\stm32f10x_exti.h
+.\objects\timconfig.o: .\Library\stm32f10x_flash.h
+.\objects\timconfig.o: .\Library\stm32f10x_fsmc.h
+.\objects\timconfig.o: .\Library\stm32f10x_gpio.h
+.\objects\timconfig.o: .\Library\stm32f10x_i2c.h
+.\objects\timconfig.o: .\Library\stm32f10x_iwdg.h
+.\objects\timconfig.o: .\Library\stm32f10x_pwr.h
+.\objects\timconfig.o: .\Library\stm32f10x_rcc.h
+.\objects\timconfig.o: .\Library\stm32f10x_rtc.h
+.\objects\timconfig.o: .\Library\stm32f10x_sdio.h
+.\objects\timconfig.o: .\Library\stm32f10x_spi.h
+.\objects\timconfig.o: .\Library\stm32f10x_tim.h
+.\objects\timconfig.o: .\Library\stm32f10x_usart.h
+.\objects\timconfig.o: .\Library\stm32f10x_wwdg.h
+.\objects\timconfig.o: .\Library\misc.h
+.\objects\timconfig.o: Hard ware\TimConfig.h
