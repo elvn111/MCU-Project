@@ -1,0 +1,3 @@
+Load "bootload\\bootload.axf" 
+Erase Done.Programming Done.Verify OK.Application running ...
+Flash Load finished at 10:06:06

@@ -1,0 +1,12 @@
+pwmandencode\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3/port.c
+pwmandencode\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
+pwmandencode\port.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+pwmandencode\port.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+pwmandencode\port.o: ../Core/Inc/FreeRTOSConfig.h
+pwmandencode\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
+pwmandencode\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
+pwmandencode\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
+pwmandencode\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3/portmacro.h
+pwmandencode\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
+pwmandencode\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
+pwmandencode\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h

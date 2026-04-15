@@ -1,0 +1,121 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.24.2.0
+Copyright (C) 2017 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: yan admin, 1, LIC=9WSKC-7JUVE-9U84U-SXUAK-LP21H-P2Z8I
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.24.1
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 5 (build 528)
+Assembler:       Armasm.exe V5.06 update 5 (build 528)
+Linker/Locator:  ArmLink.exe V5.06 update 5 (build 528)
+Library Manager: ArmAr.exe V5.06 update 5 (build 528)
+Hex Converter:   FromElf.exe V5.06 update 5 (build 528)
+CPU DLL:         SARMCM3.DLL V5.24.1
+Dialog DLL:      DCM.DLL V1.16.0.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.1.0
+Dialog DLL:      TCM.DLL V1.32.0.0
+ 
+<h2>Project:</h2>
+C:\Users\admin\Desktop\stm32cubemx project\LVGL\Super Project\MDK-ARM\Super Project.uvprojx
+Project File Date:  04/08/2026
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 5 (build 528)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Rebuild target 'Super Project'
+assembling startup_stm32f103xb.s...
+compiling usart.c...
+compiling i2c.c...
+compiling stm32f1xx_hal_gpio_ex.c...
+compiling gpio.c...
+compiling stm32f1xx_it.c...
+compiling tim.c...
+compiling stm32f1xx_hal_adc.c...
+compiling stm32f1xx_hal_msp.c...
+compiling iwdg.c...
+compiling stm32f1xx_hal_timebase_tim.c...
+compiling adc.c...
+compiling stm32f1xx_hal_adc_ex.c...
+compiling main.c...
+../Core/Src/main.c(264): warning:  #177-D: variable "middle"  was declared but never referenced
+  	int x=0,y=0,angle=0,middle=0;
+../Core/Src/main.c(265): warning:  #177-D: variable "x1_r"  was declared but never referenced
+  	int x1_r=0,y1_r=0,x2_r=0,y2_r=0,x3_r=0,y3_r=0,x4_r=0,y4_r=0;
+../Core/Src/main.c(265): warning:  #177-D: variable "y1_r"  was declared but never referenced
+  	int x1_r=0,y1_r=0,x2_r=0,y2_r=0,x3_r=0,y3_r=0,x4_r=0,y4_r=0;
+../Core/Src/main.c(265): warning:  #177-D: variable "x2_r"  was declared but never referenced
+  	int x1_r=0,y1_r=0,x2_r=0,y2_r=0,x3_r=0,y3_r=0,x4_r=0,y4_r=0;
+../Core/Src/main.c(265): warning:  #177-D: variable "y2_r"  was declared but never referenced
+  	int x1_r=0,y1_r=0,x2_r=0,y2_r=0,x3_r=0,y3_r=0,x4_r=0,y4_r=0;
+../Core/Src/main.c(265): warning:  #177-D: variable "x3_r"  was declared but never referenced
+  	int x1_r=0,y1_r=0,x2_r=0,y2_r=0,x3_r=0,y3_r=0,x4_r=0,y4_r=0;
+../Core/Src/main.c(265): warning:  #177-D: variable "y3_r"  was declared but never referenced
+  	int x1_r=0,y1_r=0,x2_r=0,y2_r=0,x3_r=0,y3_r=0,x4_r=0,y4_r=0;
+../Core/Src/main.c(265): warning:  #177-D: variable "x4_r"  was declared but never referenced
+  	int x1_r=0,y1_r=0,x2_r=0,y2_r=0,x3_r=0,y3_r=0,x4_r=0,y4_r=0;
+../Core/Src/main.c(265): warning:  #177-D: variable "y4_r"  was declared but never referenced
+  	int x1_r=0,y1_r=0,x2_r=0,y2_r=0,x3_r=0,y3_r=0,x4_r=0,y4_r=0;
+../Core/Src/main.c(266): warning:  #550-D: variable "fps"  was set but never used
+  	int fps,count;
+../Core/Src/main.c(267): warning:  #177-D: variable "biankuang"  was declared but never referenced
+  	int biankuang=4;
+../Core/Src/main.c: 11 warnings, 0 errors
+compiling dma.c...
+compiling stm32f1xx_hal_tim_ex.c...
+compiling stm32f1xx_hal_tim.c...
+compiling stm32f1xx_hal.c...
+compiling stm32f1xx_hal_gpio.c...
+compiling stm32f1xx_hal_dma.c...
+compiling stm32f1xx_hal_pwr.c...
+compiling stm32f1xx_hal_cortex.c...
+compiling stm32f1xx_hal_rcc_ex.c...
+compiling stm32f1xx_hal_exti.c...
+compiling system_stm32f1xx.c...
+compiling stm32f1xx_hal_flash_ex.c...
+compiling stm32f1xx_hal_flash.c...
+compiling stm32f1xx_hal_rcc.c...
+compiling stm32f1xx_hal_iwdg.c...
+compiling stm32f1xx_hal_i2c.c...
+compiling stm32f1xx_hal_uart.c...
+compiling IIC_Hardware.c...
+compiling OLED.c...
+Hardware\OLED.c(759): warning:  #188-D: enumerated type mixed with another type
+  	OLED_DrawAThriangle(x,y,x+sin(rad[0])*lenght,y+cos(rad[0])*lenght,x+sin(rad[side-1])*lenght,y+cos(rad[side-1])*lenght,0);
+Hardware\OLED.c(763): warning:  #188-D: enumerated type mixed with another type
+  			OLED_DrawAThriangle(x,y,x+sin(rad[i])*lenght,y+cos(rad[i])*lenght,x+sin(rad[i+1])*lenght,y+cos(rad[i+1])*lenght,0);
+Hardware\OLED.c: 2 warnings, 0 errors
+linking...
+Program Size: Code=16966 RO-data=2682 RW-data=292 ZI-data=3020  
+FromELF: creating hex file...
+After Build - User command #1: fromelf --bin --output="./Super Project/Super Project.bin" "./Super Project/Super Project.axf"
+"Super Project\Super Project.axf" - 0 Error(s), 13 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.0.1.pack
+                ARM.CMSIS.5.0.1
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.0.1
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F1xx_DFP.2.2.0.pack
+                Keil.STM32F1xx_DFP.2.2.0
+                STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_Super_Project
+  C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include
+  C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.0.1
+Build Time Elapsed:  00:00:13
+</pre>
+</body>
+</html>

@@ -1,0 +1,24 @@
+--cpu Cortex-M3
+"bootload\startup_stm32f103xb.o"
+"bootload\oled.o"
+"bootload\gpio.o"
+"bootload\main.o"
+"bootload\stm32f1xx_it.o"
+"bootload\stm32f1xx_hal_msp.o"
+"bootload\stm32f1xx_hal_gpio_ex.o"
+"bootload\stm32f1xx_hal_uart.o"
+"bootload\stm32f1xx_hal.o"
+"bootload\stm32f1xx_hal_rcc.o"
+"bootload\stm32f1xx_hal_rcc_ex.o"
+"bootload\stm32f1xx_hal_gpio.o"
+"bootload\stm32f1xx_hal_dma.o"
+"bootload\stm32f1xx_hal_cortex.o"
+"bootload\stm32f1xx_hal_pwr.o"
+"bootload\stm32f1xx_hal_flash.o"
+"bootload\stm32f1xx_hal_flash_ex.o"
+"bootload\stm32f1xx_hal_exti.o"
+"bootload\system_stm32f1xx.o"
+--library_type=microlib --strict --scatter "bootload\bootload.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "bootload.map" -o bootload\bootload.axf

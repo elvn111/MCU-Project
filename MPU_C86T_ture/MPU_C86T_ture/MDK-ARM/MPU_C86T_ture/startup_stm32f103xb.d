@@ -1,0 +1,1 @@
+mpu_c86t_ture\startup_stm32f103xb.o: startup_stm32f103xb.s
