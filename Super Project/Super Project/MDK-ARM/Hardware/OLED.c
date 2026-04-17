@@ -394,9 +394,9 @@ void OLED_Init(void)
 	
 	OLED_I2C_Start();
 	OLED_I2C_SendByte(0x78);	// 从机地址
-  OLED_I2C_SendByte(0x00);	// 写命令标识位
-  OLED_I2C_SendByte(0x20);	// 内存地址模式命令
-  OLED_I2C_SendByte(0x00);	// 水平模式（行+列自增）
+  	OLED_I2C_SendByte(0x00);	// 写命令标识位
+ 	 OLED_I2C_SendByte(0x20);	// 内存地址模式命令
+  	OLED_I2C_SendByte(0x00);	// 水平模式（行+列自增）
 	OLED_I2C_Stop();
 	
 	OLED_WriteCommand(0xD3);	//设置显示偏移
@@ -441,7 +441,7 @@ void OLED_Horizon(int X,int Y,int Z){
 	int Axis_k=0;
 	int Axis_h=((Z+20000)*32/20000)%64;
 	int Axis_l=Axis_h;
-	uint64_t Fx16 =0-1;
+	uint64_t Fx16 = (uint64_t)-1;
 	memset(OLEDPicture_total.OLEDPicture_8[0],0,1024);
 	for(int i=0;i<128;i++){
 		if(X<=0){
@@ -629,6 +629,14 @@ void OLEDMin_DrawAWord(int x,int y,char CH,Color color)
 	}
 }
 
+void OLEDMin_DrawAString(int x,int y,char * CH,Color color){
+	while(*CH){
+		OLEDMin_DrawAWord(x,y,*CH,color);
+		CH++;
+		x+=8;
+	}
+}
+
 /**
   * @brief  求向量叉乘绝对值
 	* @param  向量坐标
@@ -723,23 +731,16 @@ void OLED_DrawAPentagon(int x1,int y1,
   * @retval 无
   */
 #define pi 3.1415926
-void OLED_DrawAPolygon(int x,int y,int side, int lenght , float angle,Color color)
-{
+void OLED_DrawAPolygon(int x,int y,int side, int lenght , float angle,Color color){
 	float angle1[side];
 	float rad[side];
-	for(int i=0;i<side;i++)
-	{
+	for(int i=0;i<side;i++){
 		angle1[i]=360*i/side+angle;
 		rad[i]=angle1[i]*pi/180;
 	}
-	OLED_DrawAThriangle(x,y,x+sin(rad[0])*lenght,y+cos(rad[0])*lenght,x+sin(rad[side-1])*lenght,y+cos(rad[side-1])*lenght,0);
-	for(int i=0;i<side-1;i++)
-	{
-		if(i%2)
-			OLED_DrawAThriangle(x,y,x+sin(rad[i])*lenght,y+cos(rad[i])*lenght,x+sin(rad[i+1])*lenght,y+cos(rad[i+1])*lenght,0);
-		else
-			continue;
-			//OLED_DrawAThriangle(x,y,x+sin(rad[i])*lenght,y+cos(rad[i])*lenght,x+sin(rad[i+1])*lenght,y+cos(rad[i+1])*lenght,1);
+	OLED_DrawAThriangle(x,y,x+sin(rad[0])*lenght,y+cos(rad[0])*lenght,x+sin(rad[side-1])*lenght,y+cos(rad[side-1])*lenght,OLED_White);
+	for(int i=0;i<side-1;i++){
+		OLED_DrawAThriangle(x,y,x+sin(rad[i])*lenght,y+cos(rad[i])*lenght,x+sin(rad[i+1])*lenght,y+cos(rad[i+1])*lenght,OLED_White);
 	}
 }
 
@@ -971,4 +972,115 @@ void OLED_AMPDrawARatateWord(int x,int y,float angle ,char CH,Color color,uint8_
 			}
 		}
 	}
+}
+
+void OLED_DrawAAixs(int16_t num,uint16_t t,int AMP)
+{
+	if(AMP==1)
+	{
+		for(int i=0;i<128;i++)
+		{
+			OLEDPicture_total.OLEDPicture_64[i]|=(1ull<<(64-OLED_Sample_value[(t+i+128)%256][num]/64));
+			OLED_DrawALine_For_Axis(i-1,(64-OLED_Sample_value[(t+i+127)%256][num]/64),i,(64-OLED_Sample_value[(t+i+128)%256][num]/64),1);
+		}
+	}
+	if(AMP==2)
+	{
+		for(int i=0;i<128;i++)
+		{
+			OLEDPicture_total.OLEDPicture_64[i]|=(1ull<<(64-(OLED_Sample_value[(t+2*i)%256][num]+OLED_Sample_value[(t+2*i+((t%2)?1:-1))%256][num])/128));
+		}
+	}
+	
+}
+
+void OLED_DrawALine(int x,int y,int x1,int y1,Color color)
+{
+	int dx=x1-x;
+	int dy=y1-y;
+	int x_a=(x1>x)?1:-1;
+	int y_a=(y1>y)?1:-1;
+	int x_n=x,y_n=y;
+	int length_x = (dx>0)?dx:-dx;
+	int length_y = (dy>0)?dy:-dy;
+	if(length_x>=length_y)
+	{
+		for(int i=0;i<length_x;i++)
+		{
+			y_n=((x_n-x)*dy/dx)+y;
+			if(x_n > 0 && x_n <= 128 && y_n >0 && y_n <=64)
+			{
+				switch(color){
+					case OLED_Black:OLEDPicture_total.OLEDPicture_64[x_n]&=~(1ull<<(y_n));break;
+					case OLED_White:OLEDPicture_total.OLEDPicture_64[x_n]|= (1ull<<(y_n));break;
+					case OLED_Contr:OLEDPicture_total.OLEDPicture_64[x_n]^= (1ull<<(y_n));break;
+				}
+			}
+			x_n+=x_a;
+		}
+	}
+	else
+	{
+		for(int i=0;i<length_y;i++)
+		{
+			x_n=((y_n-y)*dx/dy)+x;
+			if(x_n > 0 && x_n <= 128 && y_n >0 && y_n <=64)
+			{
+				switch(color){
+					case OLED_Black:OLEDPicture_total.OLEDPicture_64[x_n]&=~(1ull<<(y_n));break;
+					case OLED_White:OLEDPicture_total.OLEDPicture_64[x_n]|= (1ull<<(y_n));break;
+					case OLED_Contr:OLEDPicture_total.OLEDPicture_64[x_n]^= (1ull<<(y_n));break;
+				}
+			}
+			y_n+=y_a;
+		}
+	}
+}
+
+void OLED_DrawALine_For_Axis(int x,int y,int x1,int y1,Color color)
+{
+	int dx=x1-x;
+	int dy=y1-y;
+	int x_a=(x1>x)?1:-1;
+	int y_a=(y1>y)?1:-1;
+	int x_n=x,y_n=y;
+	int length_x = (dx>0)?dx:-dx;
+	int length_y = (dy>0)?dy:-dy;
+	if(length_x<length_y)
+	{
+		for(int i=0;i<length_y;i++)
+		{
+			x_n=((y_n-y)*dx/dy)+x;
+			if(x_n > 0 && x_n <= 128 && y_n >0 && y_n <=64)
+			{
+				switch(color){
+					case OLED_Black:OLEDPicture_total.OLEDPicture_64[x_n]&=~(1ull<<(y_n));break;
+					case OLED_White:OLEDPicture_total.OLEDPicture_64[x_n]|= (1ull<<(y_n));break;
+					case OLED_Contr:OLEDPicture_total.OLEDPicture_64[x_n]^= (1ull<<(y_n));break;
+				}
+			}
+			y_n+=y_a;
+		}
+	}
+}
+
+void OLED_DrawAClock(int h,int min,int scend)
+{
+	int h_x,h_y;
+	int m_x,m_y;
+	int s_x,s_y;
+	h_x=sin((float)-(h*pi/6+pi+min*pi/720))*10+64;
+	h_y=cos((float)-(h*pi/6+pi+min*pi/720))*10+32;
+	m_x=sin((float)-(min*pi/30+pi+scend*pi/3600))*20+64;
+	m_y=cos((float)-(min*pi/30+pi+scend*pi/3600))*20+32;
+	s_x=sin((float)-scend*pi/30+pi)*25+64;
+	s_y=cos((float)-scend*pi/30+pi)*25+32;
+	OLED_DrawARound(64,32,30,29,OLED_White);
+	OLED_DrawALine(64,32,h_x,h_y,OLED_White);
+	OLED_DrawALine(64,32,m_x,m_y,OLED_White);
+	OLED_DrawALine(64,32,s_x,s_y,OLED_White);
+	OLEDMin_DrawARatateWord(60,4,90,'0',OLED_White);
+	OLEDMin_DrawARatateWord(36,28,90,'9',OLED_White);
+	OLEDMin_DrawARatateWord(84,28,90,'3',OLED_White);
+	OLEDMin_DrawARatateWord(60,52,90,'6',OLED_White);
 }

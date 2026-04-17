@@ -63,6 +63,7 @@ super project\main.o: ../Core/Inc/iwdg.h
 super project\main.o: ../Core/Inc/tim.h
 super project\main.o: ../Core/Inc/usart.h
 super project\main.o: ../Core/Inc/gpio.h
+super project\main.o: ../Core/Inc/rtc.h
 super project\main.o: ./Hardware/OLED.h
 super project\main.o: ./Hardware/IIC_Hardware.h
 super project\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

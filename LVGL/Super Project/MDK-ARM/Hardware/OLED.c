@@ -218,6 +218,10 @@ void OLED_ShowPicture(void)
 	OLED_I2C_Start();
 	OLED_I2C_SendByte(0x78);		//从机地址
 	OLED_I2C_SendByte(0x40);		//写数据
+	for(int j=0;j<128;j++)
+		{
+			OLED_I2C_SendByte(0X00);
+		}
 	for(int i=0;i<8;i++)
 	{
 		for(int j=0;j<128;j++)
@@ -995,4 +999,83 @@ void OLED_AMPDrawARatateWord(int x,int y,float angle ,char CH,Color color,uint8_
 			}
 		}
 	}
+}
+
+void OLED_DrawAAixs(void)
+{
+	static uint8_t t=0;
+	for(int i=0;i<128;i++)
+	{
+		OLEDPicture_total.OLEDPicture_64[i]|=(1ull<<(32-OLED_Sample_value[(t+i)%128][0]/128));
+		OLEDPicture_total.OLEDPicture_64[i]|=(1ull<<(32-OLED_Sample_value[(t+i)%128][1]/128));
+		OLEDPicture_total.OLEDPicture_64[i]|=(1ull<<(32-OLED_Sample_value[(t+i)%128][2]/128));
+		OLEDPicture_total.OLEDPicture_64[i]|=(1ull<<(32-OLED_Sample_value[(t+i)%128][3]/128));
+	}
+	t++;
+	if(t>=128)
+		t=0;
+}
+
+void OLED_DrawALine(int x,int y,int x1,int y1,Color color)
+{
+	int dx=x1-x;
+	int dy=y1-y;
+	int x_a=(x1>x)?1:-1;
+	int y_a=(y1>y)?1:-1;
+	int x_n=x,y_n=y;
+	int length_x = (dx>0)?dx:-dx;
+	int length_y = (dy>0)?dy:-dy;
+	if(length_x>=length_y)
+	{
+		for(int i=0;i<length_x;i++)
+		{
+			y_n=((x_n-x)*dy/dx)+y;
+			if(x_n > 0 && x_n <= 128 && y_n >0 && y_n <=64)
+			{
+				switch(color){
+					case OLED_Black:OLEDPicture_total.OLEDPicture_64[x_n]&=~(1ull<<(y_n));break;
+					case OLED_White:OLEDPicture_total.OLEDPicture_64[x_n]|= (1ull<<(y_n));break;
+					case OLED_Contr:OLEDPicture_total.OLEDPicture_64[x_n]^= (1ull<<(y_n));break;
+				}
+			}
+			x_n+=x_a;
+		}
+	}
+	else
+	{
+		for(int i=0;i<length_y;i++)
+		{
+			x_n=((y_n-y)*dx/dy)+x;
+			if(x_n > 0 && x_n <= 128 && y_n >0 && y_n <=64)
+			{
+				switch(color){
+					case OLED_Black:OLEDPicture_total.OLEDPicture_64[x_n]&=~(1ull<<(y_n));break;
+					case OLED_White:OLEDPicture_total.OLEDPicture_64[x_n]|= (1ull<<(y_n));break;
+					case OLED_Contr:OLEDPicture_total.OLEDPicture_64[x_n]^= (1ull<<(y_n));break;
+				}
+			}
+			y_n+=y_a;
+		}
+	}
+}
+
+void OLED_DrawAClock(int h,int min,int scend)
+{
+	int h_x,h_y;
+	int m_x,m_y;
+	int s_x,s_y;
+	h_x=sin((float)-h*pi/6+pi)*10+64;
+	h_y=cos((float)-h*pi/6+pi)*10+32;
+	m_x=sin((float)-min*pi/30+pi)*20+64;
+	m_y=cos((float)-min*pi/30+pi)*20+32;
+	s_x=sin((float)-scend*pi/30+pi)*25+64;
+	s_y=cos((float)-scend*pi/30+pi)*25+32;
+	OLED_DrawARound(64,32,30,29,OLED_White);
+	OLED_DrawALine(64,32,h_x,h_y,OLED_White);
+	OLED_DrawALine(64,32,m_x,m_y,OLED_White);
+	OLED_DrawALine(64,32,s_x,s_y,OLED_White);
+	OLEDMin_DrawARatateWord(60,4,90,'0',OLED_White);
+	OLEDMin_DrawARatateWord(36,28,90,'9',OLED_White);
+	OLEDMin_DrawARatateWord(84,28,90,'3',OLED_White);
+	OLEDMin_DrawARatateWord(60,52,90,'6',OLED_White);
 }

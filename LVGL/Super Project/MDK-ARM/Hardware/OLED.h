@@ -41,5 +41,9 @@ void OLED_DrawARatateNum(int x,int y,float angle,int num,int length,Color color)
 void OLEDMin_DrawARatateString(int x,int y,float angle,char * CH,Color color);
 void OLEDMin_DrawARatateNum(int x,int y,float angle,int num,int length,Color color);
 void rotate_point(float cx, float cy, float angle, float	x, 	float y, int *out_x, int *out_y);
+void OLED_DrawALine(int x,int y,int x1,int y1,Color color);
+
+void OLED_DrawAAixs(void);
+void OLED_DrawAClock(int h,int min,int scend);
 
 #endif

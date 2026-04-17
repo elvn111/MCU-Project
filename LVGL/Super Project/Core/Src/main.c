@@ -69,6 +69,7 @@ extern union {
 	 uint8_t OLEDPicture_8[128][8];
 	 uint64_t OLEDPicture_64[128];
  }OLEDPicture_total;
+extern int16_t OLED_Sample_value[128][4];
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -261,12 +262,22 @@ int main(void)
 	int a_a=1;
 	int b=0;
 	int b_b=6;
-	int x=0,y=0,angle=0,middle=0;
+	int x=1,y=1,angle=0,middle=0;
 	int x1_r=0,y1_r=0,x2_r=0,y2_r=0,x3_r=0,y3_r=0,x4_r=0,y4_r=0;
 	int fps,count;
 	int biankuang=4;
+	int dsb =10;
+	uint16_t adc_num[4]={0};
+	int h,m,s=30;
+//	for(int i=0;i<314;i++)
+//	{
+//		OLED_Sample_value[i]=(int16_t)(sin(i*0.1)*y);
+//	}
+	uint8_t z=0;
+	//HAL_ADC_Start_DMA(&hadc1,(uint32_t *)OLED_Sample_value[0],4);
   while (1)
   {
+		HAL_ADC_Start_DMA(&hadc1,(uint32_t *)OLED_Sample_value[z++],4);
 		memset(OLEDPicture_total.OLEDPicture_8[0],0x00,1024);
 		//OLED_AMPDrawARatateWord(16,16,b,'B',OLED_White,1);
 //		OLED_DrawARatateString(x,y,angle,(char *)usart_data1+1,OLED_White);
@@ -275,18 +286,20 @@ int main(void)
 //		rotate_point(x+4*strlen((char *)usart_data1+1),y+8,angle,x+8*strlen((char *)usart_data1+1),y+16,&x3_r,&y3_r);
 //		rotate_point(x+4*strlen((char *)usart_data1+1),y+8,angle,x+8*strlen((char *)usart_data1+1),y,&x4_r,&y4_r);
 //		OLED_DrawAquard(x1_r,y1_r,x2_r,y2_r,x3_r,y3_r,x4_r,y4_r,OLED_Contr);
-//		OLEDMin_DrawARatateNum(0,56,0,fps,2,OLED_White);
-//		
+		OLED_DrawALine(x,64,32,0,1);
+		OLEDMin_DrawARatateNum(0,56,0,fps,2,OLED_White);
+		OLED_DrawAClock(0,m,s);
+		//HAL_ADC_Start_DMA(&hadc1,(uint32_t *)OLED_Sample_value[0],512);
 //		OLED_DrawAquard(0,0,0,64,128,64,128,0,OLED_White);
 //		OLED_DrawAquard(0,0,0,0,128,64,128,64,OLED_White);
 //		OLED_DrawAquard(0+biankuang,0+2*biankuang,0+biankuang,64-biankuang,128-biankuang,64-biankuang,128-biankuang,0+2*biankuang,OLED_Black);
 //		OLED_DrawAquard(0,0,0,0,128,64,128,64,OLED_White);
-		OLED_DrawAquard(8,0,9,0,9,64,9,64,OLED_White);
-		for(int i=0;i<5;i++)
-		{
-			OLED_DrawAquard(8,8+i*16,9,9+i*16,128,9+i*16,128,8+i*16,OLED_White);
-		}
-		
+//		OLED_DrawAquard(8,0,9,0,9,64,9,64,OLED_White);
+//		for(int i=0;i<5;i++)
+//		{
+//			OLED_DrawAquard(8,8+i*16,9,9+i*16,128,9+i*16,128,8+i*16,OLED_White);
+//		}
+//		
 		//OLED_DrawAquard(8,24,9,25,128,25,128,24,OLED_White);
 		
 //		OLED_DrawARound(64,36,20,0,OLED_White);
@@ -318,26 +331,37 @@ int main(void)
 //										96,38,
 //										96,42,
 //										a ,42,OLED_White);
+		//OLED_DrawAAixs();
+
+
 		fps=1000/(HAL_GetTick()-count);
 		count=HAL_GetTick();
 
 		OLED_ShowPicture();
 		if(usart_data1[0]=='t')
 		{
+			if(y>0)
 			y--;
 		}else if(usart_data1[0]=='l'){
-			x--;
+			if(x>0)
+				x=(x+31)%64;
 		}else if(usart_data1[0]=='m'){
 			
 		}else if(usart_data1[0]=='r'){
-			x++;
+				x=(x+1)%64;
 		}else if(usart_data1[0]=='b'){
-			y++;
+			if(y<20)
+				y++;
 		}else if(usart_data1[0]=='a'){
 			angle++;
 		}else if(usart_data1[0]=='c'){
 			angle--;
 		}
+		h=(h+1)%12;
+		m=(m+1)%60;
+		s=(s+1)%60;
+		HAL_Delay(500);
+		
 		
 		usart_data1[0]=0;
 		if(a>96||a<32)

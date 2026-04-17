@@ -408,5 +408,6 @@ union {
 	 uint64_t OLEDPicture_64[128];
  }OLEDPicture_total;
  
+ int16_t OLED_Sample_value[128][4]={0};
  
 #endif

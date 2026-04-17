@@ -407,6 +407,8 @@ union {
 	 uint8_t OLEDPicture_8[128][8];
 	 uint64_t OLEDPicture_64[128];
  }OLEDPicture_total;
+
+ int16_t OLED_Sample_value[256][4]={0};
  
  
 #endif

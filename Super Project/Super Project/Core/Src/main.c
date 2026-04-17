@@ -27,6 +27,8 @@
 #include "usart.h"
 #include "gpio.h"
 #include "iwdg.h"
+#include "rtc.h"
+#include "stm32f1xx_hal_conf.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -196,10 +198,12 @@ int main(void)
   MX_TIM2_Init();
   MX_I2C2_Init();
   //MX_IWDG_Init();
+  MX_RTC_Init();
+	MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
   OLED_Init();
 	IIC1_Init();
-  MX_IWDG_Init();
+
   __HAL_RCC_PWR_CLK_ENABLE();
   lprintf("[App]:Freertos begin %d\n",HAL_GetTick());
   printf("Reset for %s \n",Reset_Show[Reset_Cause]);
@@ -268,8 +272,9 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC|RCC_PERIPHCLK_RTC;
   PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
+  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();

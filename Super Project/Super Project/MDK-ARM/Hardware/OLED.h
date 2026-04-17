@@ -31,6 +31,7 @@ void OLEDMin_AMPDrawAWord(int x,int y,char CH,Color color,uint8_t num);
 void OLEDMin_DrawARatateString(int x,int y,float angle,char * CH,Color color);
 
 void OLEDMin_DrawARatateNum(int x,int y,float angle,int num,int length,Color color);
+void OLEDMin_DrawAString(int x,int y,char * CH,Color color);
 
 
 void OLED_DrawAPolygon(int x,int y,int side, int lenght , float angle,Color color);
@@ -52,5 +53,12 @@ void OLED_DrawARatateNum(int x,int y,float angle,int num,int length,Color color)
 void OLED_DrawANum(int x,int y,int num,int length,Color color);
 
 void rotate_point(float cx, float cy, float angle, float	x, 	float y, int *out_x, int *out_y);
+
+void OLED_DrawAAixs(int16_t num,uint16_t t,int AMP);
+
+void OLED_DrawALine(int x,int y,int x1,int y1,Color color);
+void OLED_DrawALine_For_Axis(int x,int y,int x1,int y1,Color color);
+
+void OLED_DrawAClock(int h,int min,int scend);
 
 #endif

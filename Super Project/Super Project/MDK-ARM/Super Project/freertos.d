@@ -71,3 +71,4 @@ super project\freertos.o: ../Core/Inc/gpio.h
 super project\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 super project\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
 super project\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+super project\freertos.o: ../Core/Inc/rtc.h

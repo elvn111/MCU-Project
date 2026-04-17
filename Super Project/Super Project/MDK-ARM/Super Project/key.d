@@ -59,3 +59,4 @@ super project\key.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 super project\key.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
 super project\key.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 super project\key.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
+super project\key.o: Hardware\KEY.h
