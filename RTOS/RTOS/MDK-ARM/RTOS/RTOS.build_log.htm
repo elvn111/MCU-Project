@@ -1,0 +1,104 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.36.0.0
+Copyright (C) 2021 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: 1 admin, 1, LIC=VGXG8-3SC0U-74FS0-BDKHF-D9AMP-E8GZC
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.36.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 7 (build 960)
+Assembler:       Armasm.exe V5.06 update 7 (build 960)
+Linker/Locator:  ArmLink.exe V5.06 update 7 (build 960)
+Library Manager: ArmAr.exe V5.06 update 7 (build 960)
+Hex Converter:   FromElf.exe V5.06 update 7 (build 960)
+CPU DLL:         SARMCM3.DLL V5.36.0.0
+Dialog DLL:      DCM.DLL V1.17.3.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.9.0
+Dialog DLL:      TCM.DLL V1.53.0.0
+ 
+<h2>Project:</h2>
+c:\Users\admin\Desktop\stm32cubemx project\RTOS\RTOS\MDK-ARM\RTOS.uvprojx
+Project File Date:  07/20/2026
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Rebuild target 'RTOS'
+assembling startup_stm32f103xb.s...
+compiling tim.c...
+compiling stm32f1xx_it.c...
+compiling gpio.c...
+compiling stm32f1xx_hal_gpio.c...
+compiling stm32f1xx_hal_gpio_ex.c...
+compiling stm32f1xx_hal_msp.c...
+compiling ELVNRTOS.c...
+.\Hardware\OLED.h(69): warning:  #1-D: last line of file ends without a newline
+  #endif
+User\ELVNRTOS.h(37): warning:  #1-D: last line of file ends without a newline
+  #endif /* __ELVNRTOS_H__ */
+User\ELVNRTOS.c(37): warning:  #1207-D: unknown attribute "__align"
+  __attribute__((__align(4)))char task_heap[TASK_BLOCK_NUM][TASK_BLOCK_SIZE];
+User\ELVNRTOS.c(148): warning:  #177-D: variable "block_head"  was declared but never referenced
+      int block_head;
+User\ELVNRTOS.c(417): warning:  #940-D: missing return statement at end of non-void function "ETask_StartScheduler" 
+  }
+User\ELVNRTOS.c: 5 warnings, 0 errors
+compiling stm32f1xx_hal.c...
+compiling main.c...
+.\Hardware\OLED.h(69): warning:  #1-D: last line of file ends without a newline
+  #endif
+.\User\ELVNRTOS.h(37): warning:  #1-D: last line of file ends without a newline
+  #endif /* __ELVNRTOS_H__ */
+../Core/Src/main.c: 2 warnings, 0 errors
+compiling stm32f1xx_hal_rcc_ex.c...
+compiling stm32f1xx_hal_tim_ex.c...
+compiling stm32f1xx_hal_dma.c...
+compiling OLED.c...
+Hardware\OLED.h(69): warning:  #1-D: last line of file ends without a newline
+  #endif
+Hardware\OLED.c(147): warning:  #177-D: variable "trans"  was declared but never referenced
+  	uint8_t trans[8]={0};
+Hardware\OLED.c(1090): warning:  #177-D: variable "x_a"  was declared but never referenced
+  	int x_a=(x1>x)?1:-1;
+Hardware\OLED.c: 3 warnings, 0 errors
+compiling stm32f1xx_hal_tim.c...
+compiling stm32f1xx_hal_rcc.c...
+compiling system_stm32f1xx.c...
+compiling stm32f1xx_hal_pwr.c...
+compiling stm32f1xx_hal_flash.c...
+compiling stm32f1xx_hal_exti.c...
+compiling stm32f1xx_hal_flash_ex.c...
+compiling stm32f1xx_hal_cortex.c...
+linking...
+Program Size: Code=7560 RO-data=2592 RW-data=28 ZI-data=3620  
+FromELF: creating hex file...
+"RTOS\RTOS.axf" - 0 Error(s), 10 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.8.0.pack
+                ARM.CMSIS.5.8.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.5.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F1xx_DFP.2.2.0.pack
+                Keil.STM32F1xx_DFP.2.2.0
+                STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_RTOS
+  C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.8.0\CMSIS\Core\Include
+  C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.5.0
+Build Time Elapsed:  00:00:10
+</pre>
+</body>
+</html>

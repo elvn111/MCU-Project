@@ -202,8 +202,7 @@ void StartInitTask(void *argument)
 	xSemaphoreGive(SELTask_semHandle);
   xSemaphoreTake(TimeDisplayTask_semHandle,0);
   xSemaphoreTake(KeyBoard_semHandle, 0); // 阻塞等待KeyBoard信号量
-  for(;;)
-  {
+  for(;;){
     lprintf("[FreeRTOS]:InitTask\n");
 		vTaskDelete(NULL);
   }
@@ -223,15 +222,13 @@ const char MENUSELECT [task_num][15]={
   "5.ShowTime",
   "6.KeyBoard"
 };
-void OLED_SelectTask(void *argument)
-{
+void OLED_SelectTask(void *argument){
   uint16_t Key_num1=0;
 	uint16_t i=0;
 	OLED_Clear();
 	int fps,count;
   size_t freeHeap;
-  for(;;)
-  {
+  for(;;){
 		memset(OLEDPicture_total.OLEDPicture_8[0],0x00,1024);
 		xSemaphoreTake(SELTask_semHandle,portMAX_DELAY);//�ź���
     freeHeap = xPortGetFreeHeapSize();
@@ -305,42 +302,34 @@ void OLED_SelectTask(void *argument)
 * @param argument: Not used
 * @retval None
 */
-void ADC_Task(void *argument)
-{
+void ADC_Task(void *argument){
   uint16_t Key_num1;
   int16_t num=0;
   uint8_t counter=0;
   uint8_t bour =1;
 	xSemaphoreTake(ADCTask_semHandle,0);
-  for(;;)
-  {
+  for(;;){
     xSemaphoreTake(ADCTask_semHandle,portMAX_DELAY);
     Key_num1=0;
     Key_num1=xEventGroupWaitBits(EventGroupHandle,0XF,pdTRUE,pdFALSE,0);
 		memset(OLEDPicture_total.OLEDPicture_8[0],0x00,1024);
-		
-    if(num==4)
-    {
+    if(num==4){
       OLED_DrawAString(0,0,"ADC:",OLED_White);
       OLED_DrawANum(40,0,OLED_Sample_value[(counter-1)][0],6,OLED_White);
       OLED_DrawANum(40,16,OLED_Sample_value[(counter-1)][1],6,OLED_White);
       OLED_DrawANum(40,32,OLED_Sample_value[(counter-1)][2],6,OLED_White);
       OLED_DrawANum(40,48,OLED_Sample_value[(counter-1)][3],6,OLED_White);
-    }
-    else if(num==5)
-    {
+    }else if(num==5){
       OLED_DrawAAixs(0,counter,bour+1);
       OLED_DrawAAixs(1,counter,bour+1);
       OLED_DrawAAixs(2,counter,bour+1);
       OLED_DrawAAixs(3,counter,bour+1);
-    }
-    else{
+    }else{
       OLED_DrawAAixs(num,counter,bour+1);
     }
     OLED_DrawANum(0,48,num,1,OLED_White);
 		OLED_ShowPicture();
-		if(Key_num1&8)
-		{
+		if(Key_num1&8){
 			//OLED_Clear();
 			xSemaphoreGive(SELTask_semHandle);
 			continue;
@@ -365,8 +354,7 @@ void ADC_Task(void *argument)
 * @param argument: Not used
 * @retval None
 */
-void MPU_Task(void *argument)
-{
+void MPU_Task(void *argument){
 	typedef union{
 	  struct {
 		  uint8_t Lbyte;
@@ -419,7 +407,7 @@ void Button_ReadTask(void *argument){
       memset(usart_data,0x00,128);
       usart_reflag1=0;
     }
-    HAL_IWDG_Refresh(&hiwdg);
+    //HAL_IWDG_Refresh(&hiwdg);
   }
 }
 
@@ -463,16 +451,14 @@ void FlashWriteTask(void * argument){
   EraseInitStruct.PageAddress = PARAMETERADDRESS;           
   EraseInitStruct.NbPages = 1;                        
   HAL_FLASHEx_Erase(&EraseInitStruct, &PAGEError);
-  while(FLASH_WaitForLastOperation(1000)!=HAL_OK)
-  {
+  while(FLASH_WaitForLastOperation(1000)!=HAL_OK){
     ;
   }
   HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, PARAMETERADDRESS, UPDATEFLAGE);
   HAL_FLASH_Lock();
   __enable_irq();
   OLED_Clear();
-  for(;;)
-  {
+  for(;;){
     vTaskDelete(NULL);
   }
 }
@@ -482,15 +468,13 @@ void FlashWriteTask(void * argument){
 * @param argument: Not used
 * @retval None
 */
-void TimeDisplay_Task(void *argument)
-{
+void TimeDisplay_Task(void *argument){
   RTC_TimeTypeDef sTime = {0};
   RTC_DateTypeDef sDate = {0};
   char timeStr[20];
   static uint8_t displayEnabled = 0;  // 显示状态
   uint16_t Key_num1;
-  for(;;)
-  {
+  for(;;){
     xSemaphoreTake(TimeDisplayTask_semHandle,portMAX_DELAY);
     Key_num1=0;
     Key_num1=xEventGroupWaitBits(EventGroupHandle,8,pdTRUE,pdFALSE,0);
@@ -499,15 +483,11 @@ void TimeDisplay_Task(void *argument)
 			xSemaphoreGive(SELTask_semHandle);
 			continue;
 		}
-    // 等待时间显示事件
-
     // 获取当前时间
     HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
     HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
-
     // 格式化时间字符串
     sprintf(timeStr, "%02d:%02d:%02d", sTime.Hours, sTime.Minutes, sTime.Seconds);
-
     // 显示在 OLED 上（假设在固定位置）
     memset(OLEDPicture_total.OLEDPicture_8[0],0x00,1024);
     OLED_DrawAString(1, 1, timeStr,OLED_White);
@@ -515,8 +495,7 @@ void TimeDisplay_Task(void *argument)
     OLED_ShowPicture();
     // 检查是否还有其他事件（比如再次按键切换）
     EventBits_t bits = xEventGroupGetBits(EventGroupHandle);
-    if (bits & TIME_DISPLAY_BIT)
-    {
+    if (bits & TIME_DISPLAY_BIT){
       // 如果位仍然设置，清除并切换状态
       xEventGroupClearBits(EventGroupHandle, TIME_DISPLAY_BIT);
       displayEnabled = !displayEnabled;
@@ -526,7 +505,6 @@ void TimeDisplay_Task(void *argument)
     vTaskDelay(pdMS_TO_TICKS(1000));
     xSemaphoreGive(TimeDisplayTask_semHandle);
   }
-  
 }
 
 /**
@@ -534,8 +512,7 @@ void TimeDisplay_Task(void *argument)
 * @param argument: Not used
 * @retval None
 */
-void KeyBoard_Task(void *argument)
-{
+void KeyBoard_Task(void *argument){
   // KeyBoard任务逻辑
   // 例如，处理键盘输入
   uint16_t Key_num1;
@@ -549,10 +526,8 @@ void KeyBoard_Task(void *argument)
   };
   char ch1[32]={0};
   int n=0;
-  for(;;)
-  {
+  for(;;){
     xSemaphoreTake(KeyBoard_semHandle,portMAX_DELAY);
-
      Key_num1=0;
     Key_num1=xEventGroupWaitBits(EventGroupHandle,0X3F,pdTRUE,pdFALSE,0);
     if(Key_num1&1){

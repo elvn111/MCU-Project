@@ -20,6 +20,7 @@
 #include "main.h"
 #include "adc.h"
 #include "dma.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -71,7 +72,7 @@ __asm(".global __use_no_semihosting\n\t"); // ARMCC6
 #pragma import(__use_no_semihosting) // ARMCC5
 #endif
 
-// ÖØ¶¨Ïò
+// ï¿½Ø¶ï¿½ï¿½ï¿½
 uint32_t a=1,b=5;
 char ch_library[4][16] __attribute__((aligned(32))) = {0};//
 int fputc(int ch, FILE *f)
@@ -181,6 +182,7 @@ int main(void)
   MX_DMA_Init();
   MX_ADC1_Init();
   MX_USART2_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 	OLED_Init();
 	//OLED_ShowString(1,1,"KSKBL");

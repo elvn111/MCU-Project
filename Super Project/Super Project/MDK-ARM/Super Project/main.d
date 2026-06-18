@@ -68,3 +68,4 @@ super project\main.o: ./Hardware/OLED.h
 super project\main.o: ./Hardware/IIC_Hardware.h
 super project\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 super project\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+super project\main.o: ./Hardware/ESP_01.h

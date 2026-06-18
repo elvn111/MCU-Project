@@ -1,0 +1,131 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ; port.s
+    2 00000000                 AREA             |.text|, CODE, READONLY
+    3 00000000                 THUMB
+    4 00000000                 EXPORT           PendSV_Handler
+    5 00000000                 IMPORT           Task_Current
+    6 00000000                 IMPORT           Task_Sign_Table
+    7 00000000                 IMPORT           Task_Count
+    8 00000000         
+    9 00000000         PendSV_Handler
+   10 00000000         ; 保存当前任务现场
+   11 00000000 F3EF 8009       MRS              R0, PSP     ; R0 = 当前任务
+                                                            的 sp（指向 R0�
+                                                            ��
+   12 00000004 E920 0FF0       STMDB            R0!, {R4-R11} ; 保存 R4-R11�
+                                                            �R0 递减
+   13 00000008 F380 8809       MSR              PSP, R0     ; 更新 PSP
+   14 0000000C         
+   15 0000000C         ; 保存当前任务的 sp
+   16 0000000C 490D            LDR              R1, =Task_Current
+   17 0000000E 7809            LDRB             R1, [R1]
+   18 00000010 4A0D            LDR              R2, =Task_Sign_Table
+   19 00000012 EA4F 0181       LSL              R1, R1, #2  ; 假设 TaskCB_t �
+                                                            ��小 4 字节
+   20 00000016 440A            ADD              R2, R2, R1
+   21 00000018 6010            STR              R0, [R2]    ; 保存到 Task_Si
+                                                            gn_Table[idx].sp
+   22 0000001A         
+   23 0000001A         ; 切换任务（简单轮转）
+   24 0000001A 490A            LDR              R1, =Task_Current
+   25 0000001C 780B            LDRB             R3, [R1]
+   26 0000001E F103 0301       ADD              R3, R3, #1
+   27 00000022 4C0A            LDR              R4, =Task_Count
+   28 00000024 7824            LDRB             R4, [R4]
+   29 00000026 42A3            CMP              R3, R4
+   30 00000028 BFA8            IT               GE
+   31 0000002A 2300            MOVGE            R3, #0
+   32 0000002C 700B            STRB             R3, [R1]    ; Task_Current= nex
+                                                            t
+   33 0000002E         
+   34 0000002E         ; 加载新任务的 sp
+   35 0000002E EA4F 0383       LSL              R3, R3, #2
+   36 00000032 441A            ADD              R2, R2, R3
+   37 00000034 6810            LDR              R0, [R2]    ; R0 = 新任务的
+                                                             sp（指向 R0）
+   38 00000036         
+   39 00000036         ; 恢复新任务现场
+   40 00000036 E890 0FF0       LDMIA            R0, {R4-R11} ; 恢复 R4-R11
+   41 0000003A 3020            ADDS             R0, R0, #32
+   42 0000003C F380 8809       MSR              PSP, R0     ; 设置新 PSP（�
+                                                            ��向 R0）
+   43 00000040         
+   44 00000040 4770            BX               LR
+   45 00000042         
+   46 00000042 00 00           ALIGN
+   47 00000044                 END
+              00000000 
+              00000000 
+              00000000 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+ork --depend=rtos\pendsv.d -ortos\pendsv.o -I.\RTE\_RTOS -IC:\Keil_v5\ARM\PACK\
+ARM\CMSIS\5.0.1\CMSIS\Include -IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\De
+vice\Include --predefine="__UVISION_VERSION SETA 524" --predefine="_RTE_ SETA 1
+" --predefine="STM32F10X_MD SETA 1" --list=pendsv.lst ..\Core\asb\pendSV.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 2 in file ..\Core\asb\pendSV.s
+   Uses
+      None
+Comment: .text unused
+PendSV_Handler 00000000
+
+Symbol: PendSV_Handler
+   Definitions
+      At line 9 in file ..\Core\asb\pendSV.s
+   Uses
+      At line 4 in file ..\Core\asb\pendSV.s
+Comment: PendSV_Handler used once
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+Task_Count 00000000
+
+Symbol: Task_Count
+   Definitions
+      At line 7 in file ..\Core\asb\pendSV.s
+   Uses
+      At line 27 in file ..\Core\asb\pendSV.s
+Comment: Task_Count used once
+Task_Current 00000000
+
+Symbol: Task_Current
+   Definitions
+      At line 5 in file ..\Core\asb\pendSV.s
+   Uses
+      At line 16 in file ..\Core\asb\pendSV.s
+      At line 24 in file ..\Core\asb\pendSV.s
+
+Task_Sign_Table 00000000
+
+Symbol: Task_Sign_Table
+   Definitions
+      At line 6 in file ..\Core\asb\pendSV.s
+   Uses
+      At line 18 in file ..\Core\asb\pendSV.s
+Comment: Task_Sign_Table used once
+3 symbols
+340 symbols in table

@@ -47,6 +47,7 @@
 "super project\iic_hardware.o"
 "super project\oled.o"
 "super project\key.o"
+"super project\esp_01.o"
 --library_type=microlib --strict --scatter "Super Project\Super Project.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

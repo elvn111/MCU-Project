@@ -1,4 +1,3 @@
-
 #include "gpio.h"
 #include "OLED_Font.h"
 #include <string.h>
@@ -19,8 +18,7 @@
   * @param  无
   * @retval 无
   */
-void OLED_I2C_Init(void)
-{
+void OLED_I2C_Init(void){
 	MX_GPIO_Init();
 	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_4,GPIO_PIN_RESET);
@@ -33,8 +31,7 @@ void OLED_I2C_Init(void)
   * @param  无
   * @retval 无
   */
-void OLED_I2C_Start(void)
-{
+void OLED_I2C_Start(void){
 	OLED_W_SDA(1);
 	OLED_W_SCL(1);
 	OLED_W_SDA(0);
@@ -46,8 +43,7 @@ void OLED_I2C_Start(void)
   * @param  无
   * @retval 无
   */
-void OLED_I2C_Stop(void)
-{
+void OLED_I2C_Stop(void){
 	OLED_W_SDA(0);
 	OLED_W_SCL(1);
 	OLED_W_SDA(1);
@@ -58,11 +54,9 @@ void OLED_I2C_Stop(void)
   * @param  Byte 要发送的一个字节
   * @retval 无
   */
-void OLED_I2C_SendByte(uint8_t Byte)
-{
+void OLED_I2C_SendByte(uint8_t Byte){
 	uint8_t i;
-	for (i = 0; i < 8; i++)
-	{
+	for (i = 0; i < 8; i++){
 		OLED_W_SDA(!!(Byte & (0x80 >> i)));
 		OLED_W_SCL(1);
 		OLED_W_SCL(0);
@@ -76,8 +70,7 @@ void OLED_I2C_SendByte(uint8_t Byte)
   * @param  Command 要写入的命令
   * @retval 无
   */
-void OLED_WriteCommand(uint8_t Command)
-{
+void OLED_WriteCommand(uint8_t Command){
 	OLED_I2C_Start();
 	OLED_I2C_SendByte(0x78);		//从机地址
 	OLED_I2C_SendByte(0x00);		//写命令
@@ -90,8 +83,7 @@ void OLED_WriteCommand(uint8_t Command)
   * @param  Data 要写入的数据
   * @retval 无
   */
-void OLED_WriteData(uint8_t Data)
-{
+void OLED_WriteData(uint8_t Data){
 	OLED_I2C_Start();
 	OLED_I2C_SendByte(0x78);		//从机地址
 	OLED_I2C_SendByte(0x40);		//写数据
@@ -105,8 +97,7 @@ void OLED_WriteData(uint8_t Data)
   * @param  X 以左上角为原点，向右方向的坐标，范围：0~127
   * @retval 无
   */
-void OLED_SetCursor(uint8_t Y, uint8_t X)
-{
+void OLED_SetCursor(uint8_t Y, uint8_t X){
 	OLED_WriteCommand(0xB0 | Y);					//设置Y位置
 	OLED_WriteCommand(0x10 | ((X & 0xF0) >> 4));	//设置X位置高4位
 	OLED_WriteCommand(0x00 | (X & 0x0F));			//设置X位置低4位
@@ -114,20 +105,16 @@ void OLED_SetCursor(uint8_t Y, uint8_t X)
 
 //*************************************************************************************************************************//
 
-
 /**
   * @brief  OLED清屏
   * @param  无
   * @retval 无
   */
-void OLED_Clear(void)
-{  
+void OLED_Clear(void){  
 	uint8_t i, j;
-	for (j = 0; j < 8; j++)
-	{
+	for (j = 0; j < 8; j++){
 		OLED_SetCursor(j, 0);
-		for(i = 0; i < 128; i++)
-		{
+		for(i = 0; i < 128; i++){
 			OLED_WriteData(0x00);
 		}
 	}
@@ -140,17 +127,14 @@ void OLED_Clear(void)
   * @param  Char 要显示的一个字符，范围：ASCII可见字符
   * @retval 无
   */
-void OLED_ShowChar(uint8_t Line, uint8_t Column, char Char)
-{      	
+void OLED_ShowChar(uint8_t Line, uint8_t Column, char Char){      	
 	uint8_t i;
 	OLED_SetCursor((Line - 1) * 2, (Column - 1) * 8);		//设置光标位置在上半部分
-	for (i = 0; i < 8; i++)
-	{
+	for (i = 0; i < 8; i++){
 		OLED_WriteData(OLED_F8x16[Char - ' '][i]);			//显示上半部分内容
 	}
 	OLED_SetCursor((Line - 1) * 2 + 1, (Column - 1) * 8);	//设置光标位置在下半部分
-	for (i = 0; i < 8; i++)
-	{
+	for (i = 0; i < 8; i++){
 		OLED_WriteData(OLED_F8x16[Char - ' '][i + 8]);		//显示下半部分内容
 	}
 }
@@ -163,25 +147,11 @@ void OLED_ShowChar(uint8_t Line, uint8_t Column, char Char)
   * @retval 无
   */
 
-
-void OLED_ShowMinChar(uint8_t Line, uint8_t Column, char Char)
-{      	
+void OLED_ShowMinChar(uint8_t Line, uint8_t Column, char Char){      	
 	uint8_t trans[8]={0};
 	OLED_SetCursor((Line - 1), (Column - 1) * 8);		//设置光标位置在上半部分
-	for (uint8_t z = 0; z < 8; z++)
-	{
-		for(uint8_t y = 0;y<8;y++)
-		{
-			trans[z]=trans[z]<<1;
-			if(OLEDMin_F8x8[Char - ' '][7-y]&(1<<z))
-			{
-				trans[z]=trans[z]|0x01;
-			}
-		}
-	}
-	for (uint8_t z = 0; z < 8; z++)
-	{
-		OLED_WriteData(trans[7-z]);			//显示上半部分内容
+	for (uint8_t z = 0; z < 8; z++){
+		OLED_WriteData(OLEDMin_F8x8[Char - ' '][z]);			//显示上半部分内容
 	}
 }
 
@@ -192,18 +162,14 @@ void OLED_ShowMinChar(uint8_t Line, uint8_t Column, char Char)
   * @param  Char 要显示的一个字符，范围：ASCII可见字符
   * @retval 无
   */
-void OLED_ShowPicture(void)
-{
+void OLED_ShowPicture(void){
 	
 	OLED_SetCursor(0,0);
-	for(int j=0;j<128;j++)
-	{
+	for(int j=0;j<128;j++){
 			OLED_WriteData(0X00);
 	}
-	for(int i=0;i<8;i++)
-	{
-		for(int j=0;j<128;j++)
-		{
+	for(int i=0;i<8;i++){
+		for(int j=0;j<128;j++){
 			OLED_WriteData(OLEDPicture_total.OLEDPicture_8[j][i]);
 		}
 	}
@@ -216,11 +182,9 @@ void OLED_ShowPicture(void)
   * @param  String 要显示的字符串，范围：ASCII可见字符
   * @retval 无
   */
-void OLED_ShowString(uint8_t Line, uint8_t Column, char *String)
-{
+void OLED_ShowString(uint8_t Line, uint8_t Column, char *String){
 	uint8_t i;
-	for (i = 0; String[i] != '\0'; i++)
-	{
+	for (i = 0; String[i] != '\0'; i++){
 		OLED_ShowChar(Line, Column + i, String[i]);
 	}
 }
@@ -232,11 +196,9 @@ void OLED_ShowString(uint8_t Line, uint8_t Column, char *String)
   * @param  String 要显示的字符串，范围：ASCII可见字符
   * @retval 无
   */
-void OLED_ShowMinString(uint8_t Line, uint8_t Column, char *String)
-{
+void OLED_ShowMinString(uint8_t Line, uint8_t Column, char *String){
 	uint8_t i;
-	for (i = 0; String[i] != '\0'; i++)
-	{
+	for (i = 0; String[i] != '\0'; i++){
 		OLED_ShowMinChar(Line, Column + i, String[i]);
 	}
 }
@@ -248,21 +210,17 @@ void OLED_ShowMinString(uint8_t Line, uint8_t Column, char *String)
   * @param  String 要显示的字符串，范围：ASCII可见字符
   * @retval 无
   */
-void OLED_ShowRowString(uint8_t Line, uint8_t Column, char *String)
-{
+void OLED_ShowRowString(uint8_t Line, uint8_t Column, char *String){
 	uint8_t i;
 	OLED_SetCursor((Line - 1) * 2,0);		//设置光标位置在上半部分
-	for (i = 0; i < 128; i++)
-	{
+	for (i = 0; i < 128; i++){
 		OLED_WriteData(0x00);			//显示上半部分内容
 	}
 	OLED_SetCursor((Line - 1) * 2+1,0);		//设置光标位置在上半部分
-	for (i = 0; i < 128; i++)
-	{
+	for (i = 0; i < 128; i++){
 		OLED_WriteData(0x00);			//显示上半部分内容
 	}
-	for (i = 0; String[i] != '\0'&&i<15; i++)
-	{
+	for (i = 0; String[i] != '\0'&&i<15; i++){
 		OLED_ShowChar(Line, Column + i, String[i]);
 	}
 }
@@ -271,11 +229,9 @@ void OLED_ShowRowString(uint8_t Line, uint8_t Column, char *String)
   * @brief  OLED次方函数
   * @retval 返回值等于X的Y次方
   */
-uint32_t OLED_Pow(uint32_t X, uint32_t Y)
-{
+uint32_t OLED_Pow(uint32_t X, uint32_t Y){
 	uint32_t Result = 1;
-	while (Y--)
-	{
+	while (Y--){
 		Result *= X;
 	}
 	return Result;
@@ -289,11 +245,9 @@ uint32_t OLED_Pow(uint32_t X, uint32_t Y)
   * @param  Length 要显示数字的长度，范围：1~10
   * @retval 无
   */
-void OLED_ShowNum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Length)
-{
+void OLED_ShowNum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Length){
 	uint8_t i;
-	for (i = 0; i < Length; i++)							
-	{
+	for (i = 0; i < Length; i++){
 		OLED_ShowChar(Line, Column + i, Number / OLED_Pow(10, Length - i - 1) % 10 + '0');
 	}
 }
@@ -306,22 +260,17 @@ void OLED_ShowNum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Length)
   * @param  Length 要显示数字的长度，范围：1~10
   * @retval 无
   */
-void OLED_ShowSignedNum(uint8_t Line, uint8_t Column, int32_t Number, uint8_t Length)
-{
+void OLED_ShowSignedNum(uint8_t Line, uint8_t Column, int32_t Number, uint8_t Length){
 	uint8_t i;
 	uint32_t Number1;
-	if (Number >= 0)
-	{
+	if (Number >= 0){
 		OLED_ShowChar(Line, Column, '+');
 		Number1 = Number;
-	}
-	else
-	{
+	}else{
 		OLED_ShowChar(Line, Column, '-');
 		Number1 = -Number;
 	}
-	for (i = 0; i < Length; i++)							
-	{
+	for (i = 0; i < Length; i++){
 		OLED_ShowChar(Line, Column + i + 1, Number1 / OLED_Pow(10, Length - i - 1) % 10 + '0');
 	}
 }
@@ -334,18 +283,13 @@ void OLED_ShowSignedNum(uint8_t Line, uint8_t Column, int32_t Number, uint8_t Le
   * @param  Length 要显示数字的长度，范围：1~8
   * @retval 无
   */
-void OLED_ShowHexNum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Length)
-{
+void OLED_ShowHexNum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Length){
 	uint8_t i, SingleNumber;
-	for (i = 0; i < Length; i++)							
-	{
+	for (i = 0; i < Length; i++)							{
 		SingleNumber = Number / OLED_Pow(16, Length - i - 1) % 16;
-		if (SingleNumber < 10)
-		{
+		if (SingleNumber < 10){
 			OLED_ShowChar(Line, Column + i, SingleNumber + '0');
-		}
-		else
-		{
+		}else{
 			OLED_ShowChar(Line, Column + i, SingleNumber - 10 + 'A');
 		}
 	}
@@ -359,11 +303,9 @@ void OLED_ShowHexNum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Leng
   * @param  Length 要显示数字的长度，范围：1~16
   * @retval 无
   */
-void OLED_ShowBinNum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Length)
-{
+void OLED_ShowBinNum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Length){
 	uint8_t i;
-	for (i = 0; i < Length; i++)							
-	{
+	for (i = 0; i < Length; i++){
 		OLED_ShowChar(Line, Column + i, Number / OLED_Pow(2, Length - i - 1) % 2 + '0');
 	}
 }
@@ -373,12 +315,10 @@ void OLED_ShowBinNum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Leng
   * @param  无
   * @retval 无
   */
-void OLED_Init(void)
-{
+void OLED_Init(void){
 	uint32_t i, j;
-	
-	for (i = 0; i < 1000; i++)			//上电延时
-	{
+	//上电延时
+	for (i = 0; i < 1000; i++){
 		for (j = 0; j < 1000; j++);
 	}
 	
@@ -434,7 +374,9 @@ void OLED_Init(void)
 
 /**
   * @brief  OLED显示地平线,地平线底下的像素亮起
-	* @param  x,y,z加速度
+  * @param  x x轴加速度，范围：-20000~20000
+  * @param  y y轴加速度，范围：-20000~20000
+  * @param  z z轴加速度，范围：-20000~20000
   * @retval 无
   */
 void OLED_Horizon(int X,int Y,int Z){
@@ -476,12 +418,14 @@ void OLED_Horizon(int X,int Y,int Z){
 
 /**
   * @brief  画一个圆
-	* @param  x、y坐标，r圆半径，color颜色
+  * @param  x_a 圆心x坐标，范围：0~127
+  * @param  y_a 圆心y坐标，范围：0~63
+  * @param  r 圆半径，范围：0~64
+  * @param  r_a 内圆半径，范围：0~64
+  * @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
   * @retval 无
   */
-
-void OLED_DrawARound(int x_a,int y_a,int r,int r_a,Color color)
-{
+void OLED_DrawARound(int x_a,int y_a,int r,int r_a,Color color){
 	int x,y;
 	int x_max,y_max,x_min,y_min;
 	x_max=x_a+r;
@@ -504,10 +448,12 @@ void OLED_DrawARound(int x_a,int y_a,int r,int r_a,Color color)
 
 /**
   * @brief  显示字符
-	* @param  x、y坐标，CH字符，color颜色
+  * @param  x x坐标，范围：0~127
+  * @param  y y坐标，范围：0~63
+  * @param  CH 字符
+  * @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
   * @retval 无
   */
-
 void OLED_DrawAWord(int x,int y,char CH,Color color){
 	for(int i=0;i<8;i++){
 		switch(color){
@@ -529,10 +475,12 @@ void OLED_DrawAWord(int x,int y,char CH,Color color){
 
 /**
   * @brief  显示字符串
-	* @param  x、y坐标，CH字符，color颜色
+  * @param  x x坐标，范围：0~127
+  * @param  y y坐标，范围：0~63
+  * @param  CH 字符串
+  * @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
   * @retval 无
   */
-
 void OLED_DrawAString(int x,int y,char * CH,Color color){
 	while(*CH){
 		OLED_DrawAWord(x,y,*CH,color);
@@ -543,14 +491,16 @@ void OLED_DrawAString(int x,int y,char * CH,Color color){
 
 /**
   * @brief  显示数字
-	* @param  x、y坐标，CH字符，color颜色
+  * @param  x x坐标，范围：0~127
+  * @param  y y坐标，范围：0~63
+  * @param  num 要显示的数字，范围：0~4294967295
+  * @param  length 要显示数字的长度，范围：1~10
+  * @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
   * @retval 无
   */
-
 void OLED_DrawANum(int x,int y,int num,int length,Color color){
 	char CH[15]={0};
-	for(int i=length-1;i>=0;i--)
-	{
+	for(int i=length-1;i>=0;i--){
 		CH[i]='0'+num%10;
 		num/=10;
 	}
@@ -558,15 +508,19 @@ void OLED_DrawANum(int x,int y,int num,int length,Color color){
 	OLED_DrawAString(x,y,CH,color);
 }
 
+//原来的时间复杂度是O（8*8*num*num），空间复杂度是O（8*8*8）；现在时间复杂度为O（8*8*num），空间复杂度为O（0）
 /**
 	* @brief  显示放大字符(最大8倍)
-	* @param  x、y坐标，CH字符，color颜色，num放大倍数
-  * @retval 无
-  */
-//原来的时间复杂度是O（8*8*num*num），空间复杂度是O（8*8*8）；现在时间复杂度为O（8*8*num），空间复杂度为O（0）
+	* @param  x x坐标，范围：0-127
+	* @param  y y坐标，范围：0-63
+	* @param  CH 字符
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+	* @param  num 放大倍数，范围：1~8
+  	* @retval 无
+  	*/
 void OLED_AMPDrawAWord(int x,int y,char CH,Color color,uint8_t num){
 	uint64_t block = (1ULL << num) - 1; // 生成 num 个连续 1
-  int idx = CH - ' ';
+  	int idx = CH - ' ';
 	for(int i=0;i<8;i++){
 		for(int j=0;j<8;j++){
 			for(int k=0;k<num;k++){
@@ -591,12 +545,16 @@ void OLED_AMPDrawAWord(int x,int y,char CH,Color color,uint8_t num){
 
 /**
 	* @brief  显示放大mini字符(最大8倍)
-	* @param  x、y坐标，CH字符，color颜色，num放大倍数
-  * @retval 无
-  */
+	* @param  x x坐标，范围：0-127
+	* @param  y y坐标，范围：0-63
+	* @param  CH 字符
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+	* @param  num 放大倍数，范围：1~8
+  	* @retval 无
+  	*/
 void OLEDMin_AMPDrawAWord(int x,int y,char CH,Color color,uint8_t num){
 	uint64_t block = (1ULL << num) - 1; // 生成 num 个连续 1
-  int idx = CH - ' ';
+  	int idx = CH - ' ';
 	for(int i=0;i<8;i++){
 		for(int j=0;j<8;j++){
 			for(int k=0;k<num;k++){
@@ -613,11 +571,13 @@ void OLEDMin_AMPDrawAWord(int x,int y,char CH,Color color,uint8_t num){
 }
 
 /**
-  * @brief  显示字符(mini)
-	* @param  x、y坐标，CH字符，color颜色
-  * @retval 无
-  */
-
+  	* @brief  显示字符(mini)
+	* @param  x x坐标，范围：0-127
+	* @param  y y坐标，范围：0-63
+	* @param  CH 字符
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
 void OLEDMin_DrawAWord(int x,int y,char CH,Color color)
 {
 	for(int i=0;i<8;i++){
@@ -629,6 +589,14 @@ void OLEDMin_DrawAWord(int x,int y,char CH,Color color)
 	}
 }
 
+/**
+	* @brief  显示字符串(mini)
+  	* @param  x x坐标，范围：0-127
+  	* @param  y y坐标，范围：0-63
+  	* @param  CH 字符串
+  	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
 void OLEDMin_DrawAString(int x,int y,char * CH,Color color){
 	while(*CH){
 		OLEDMin_DrawAWord(x,y,*CH,color);
@@ -638,28 +606,32 @@ void OLEDMin_DrawAString(int x,int y,char * CH,Color color){
 }
 
 /**
-  * @brief  求向量叉乘绝对值
-	* @param  向量坐标
-  * @retval 向量叉乘绝对值
-  */
+  	* @brief  求向量叉乘绝对值
+	* @param  x1 y1 向量1坐标
+	* @param  x2 y2 向量2坐标
+	* @param  x3 y3 向量3坐标
+  	* @retval 向量叉乘绝对值
+  	*/
 
-int area2(int x1, int y1,
-					int x2, int y2,
-					int x3, int y3)
-{
+int area2(	int x1, int y1,
+			int x2, int y2,
+			int x3, int y3){
     int val = (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1);
     return val < 0 ? -val : val;  // 绝对值
 }
+
 /**
-  * @brief  判断点(px,py) 是否在三角形内
-	* @param  向量坐标
+ 	* @brief  判断点(px,py) 是否在三角形内
+	* @param  px py 点坐标
+	* @param  x0 y0 三角形顶点坐标
+	* @param  x1 y1 三角形顶点坐标
+	* @param  x2 y2 三角形顶点坐标
 	* @retval 布尔值
-  */
+  	*/
 int pointInTriangle(int px, int py,
                     int x0, int y0,
                     int x1, int y1,
-                    int x2, int y2)
-{
+                    int x2, int y2){
     int A  = area2(x0,y0, x1,y1, x2,y2);
     int A1 = area2(px,py, x1,y1, x2,y2);
     int A2 = area2(x0,y0, px,py, x2,y2);
@@ -668,14 +640,16 @@ int pointInTriangle(int px, int py,
 }
 
 /**
-  * @brief  画一个三角形
-	* @param  x、y坐标，三个点，color颜色
-  * @retval 无
-  */
+  	* @brief  画一个三角形
+	* @param  x1 y1 三角形顶点坐标
+	* @param  x2 y2 三角形顶点坐标
+	* @param  x3 y3 三角形顶点坐标
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
 void OLED_DrawAThriangle(	int x1,int y1,
-													int x2,int y2,
-													int x3,int y3,Color color)
-{
+							int x2,int y2,
+							int x3,int y3,Color color){
 	int x,y;
 	int x_max,y_max,x_min,y_min;
 	x_min = (x1 < x2) ? ((x1 < x3) ? x1 : x3) : ((x2 < x3) ? x2 : x3);
@@ -697,39 +671,51 @@ void OLED_DrawAThriangle(	int x1,int y1,
 }
 
 /**
-  * @brief  画一个四边形
-	* @param  x、y坐标，四个点，color颜色
-  * @retval 无
-  */
+  	* @brief  画一个四边形
+	* @param  x1 y1 四边形顶点坐标
+	* @param  x2 y2 四边形顶点坐标
+	* @param  x3 y3 四边形顶点坐标
+	* @param  x4 y4 四边形顶点坐标
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
 void OLED_DrawAquard(	int x1,int y1,
-											int x2,int y2,
-											int x3,int y3,
-											int x4,int y4,Color color)
-{
+						int x2,int y2,
+						int x3,int y3,
+						int x4,int y4,Color color){
 	OLED_DrawAThriangle(x1,y1,x2,y2,x3,y3,color);
 	OLED_DrawAThriangle(x1,y1,x3,y3,x4,y4,color);
 }
+
 /**
-  * @brief  画一个五边形
-	* @param  x、y坐标，五个点，color颜色
-  * @retval 无
-  */
+  	* @brief  画一个五边形
+	* @param  x1 y1 五边形顶点坐标
+	* @param  x2 y2 五边形顶点坐标
+	* @param  x3 y3 五边形顶点坐标
+	* @param  x4 y4 五边形顶点坐标
+	* @param  x5 y5 五边形顶点坐标
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
 void OLED_DrawAPentagon(int x1,int y1,
-												int x2,int x3,
-												int y3,int y2,
-												int x4,int y4,
-												int x5,int y5,Color color)
-{
+						int x2,int x3,
+						int y3,int y2,
+						int x4,int y4,
+						int x5,int y5,Color color){
 	OLED_DrawAThriangle(x1,y1,x2,y2,x3,y3,color);
 	OLED_DrawAThriangle(x1,y1,x3,y3,x4,y4,color);
 	OLED_DrawAThriangle(x1,y1,x4,y4,x5,y5,color);
 }
 
 /**
-  * @brief  画一个正多边形
-	* @param  x、y坐标，color颜色
-  * @retval 无
-  */
+  	* @brief  画一个正多边形
+	* @param  x y 正多边形中心坐标
+	* @param  side 边数，范围：3~8
+	* @param  lenght 边长，范围：0~64
+	* @param  angle 旋转角度，范围：0~360
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
 #define pi 3.1415926
 void OLED_DrawAPolygon(int x,int y,int side, int lenght , float angle,Color color){
 	float angle1[side];
@@ -745,14 +731,13 @@ void OLED_DrawAPolygon(int x,int y,int side, int lenght , float angle,Color colo
 }
 
 /**
-  * @brief  画一格调
-	* @param  x、y坐标，两个向量，color颜色
-  * @retval 无
-  */
+  	* @brief  画一格调
+  	* @retval 无
+ 	 */
 void OLED_DrawAGeDiao(void){
 	int a=32;
 	int a_a=1;
-  while (1){
+  	while (1){
 		memset(OLEDPicture_total.OLEDPicture_8[0],0x00,1024);
 		OLED_DrawARound(a,40,8,0,OLED_White);
 		OLED_DrawARound(96,48,8,0,OLED_White);
@@ -765,18 +750,21 @@ void OLED_DrawAGeDiao(void){
 		}
 		a+=a_a;
 		HAL_Delay(50);
-  }
+  	}
 }
+
 /**
-  * @brief  求旋转坐标
-	* @param  x、y坐标
-  * @retval 无
-  */
+  	* @brief  求旋转坐标
+	* @param  cx cy 旋转中心坐标
+	* @param  angle 旋转角度，范围：0~360
+	* @param  x y 旋转前坐标
+	* @param  out_x out_y 旋转后坐标
+  	* @retval 无
+  	*/
 void rotate_point(float 	cx, float   cy, float angle, 
                   float		 x, float    y, 
-                  int *out_x, int *out_y)
-{
-		float rad =(pi/180)*angle;
+                  int *out_x, int *out_y){
+	float rad =(pi/180)*angle;
     float s = sin(rad);
     float c = cos(rad);
 
@@ -788,10 +776,13 @@ void rotate_point(float 	cx, float   cy, float angle,
 }
 
 /**
-  * @brief  显示旋转字符
-	* @param  x、y坐标，CH字符，color颜色
-  * @retval 无
-  */
+  	* @brief  显示旋转字符
+	* @param  x y 旋转中心坐标
+	* @param  angle 旋转角度，范围：0~360
+	* @param  CH 字符
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
 void OLED_DrawARatateWord(int x,int y,float angle,char CH,Color color){
 	int x_r,y_r;
 	int idx = CH - ' ';
@@ -818,11 +809,15 @@ void OLED_DrawARatateWord(int x,int y,float angle,char CH,Color color){
 		}
 	}
 }
+
 /**
-  * @brief  显示旋转字符(Mini)
-	* @param  x、y坐标，角度，CH字符，color颜色
-  * @retval 无
-  */
+  	* @brief  显示旋转字符(Mini)
+	* @param  x y 旋转中心坐标
+	* @param  angle 旋转角度，范围：0~360
+	* @param  CH 字符
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
 void OLEDMin_DrawARatateWord(int x,int y,float angle,char CH,Color color){
 	int x_r,y_r;
 	int idx = CH - ' ';
@@ -842,10 +837,13 @@ void OLEDMin_DrawARatateWord(int x,int y,float angle,char CH,Color color){
 }
 
 /**
-  * @brief  显示旋转字符串
-	* @param  x、y坐标，角度，CH字符，color颜色
-  * @retval 无
-  */
+  	* @brief  显示旋转字符串
+	* @param  x y 旋转中心坐标
+	* @param  angle 旋转角度，范围：0~360
+	* @param  CH 字符串
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
 void OLED_DrawARatateString(int x,int y,float angle,char* CH,Color color){
 	int stringlen =x+4*strlen(CH);
 	while(*CH){
@@ -879,10 +877,13 @@ void OLED_DrawARatateString(int x,int y,float angle,char* CH,Color color){
 }
 
 /**
-  * @brief  显示旋转字符串(Mini)
-	* @param  x、y坐标，角度，CH字符，color颜色
-  * @retval 无
-  */
+  	* @brief  显示旋转字符串(Mini)
+	* @param  x、y坐标
+	* @param  angle 旋转角度，范围：0~360
+	* @param  CH 字符串
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
 void OLEDMin_DrawARatateString(int x,int y,float angle,char * CH,Color color){
 	int stringlen =x+4*strlen(CH);
 	while(*CH){
@@ -907,14 +908,26 @@ void OLEDMin_DrawARatateString(int x,int y,float angle,char * CH,Color color){
 }
 
 /**
-  * @brief  显示旋转数字
-	* @param  x、y坐标，角度，CH字符，color颜色
-  * @retval 无
-  */
+  	* @brief  显示字符串(Mini)
+	* @param  x、y坐标
+	* @param  angle 旋转角度，范围：0~360
+	* @param  CH 字符串
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
+
+/**
+  	* @brief  显示旋转数字
+	* @param  x、y坐标
+	* @param  angle 旋转角度，范围：0~360
+	* @param  num 要显示的数字，范围：0~4294967295
+	* @param  length 要显示数字的长度，范围：1~10
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
 void OLED_DrawARatateNum(int x,int y,float angle,int num,int length,Color color){
 	char CH[15]={0};
-	for(int i=length-1;i>=0;i--)
-	{
+	for(int i=length-1;i>=0;i--){
 		CH[i]='0'+num%10;
 		num/=10;
 	}
@@ -923,14 +936,17 @@ void OLED_DrawARatateNum(int x,int y,float angle,int num,int length,Color color)
 }
 
 /**
-  * @brief  显示旋转数字(min)
-	* @param  x、y坐标，角度，CH字符，color颜色
-  * @retval 无
-  */
+ 	* @brief  显示旋转数字(min)
+  	* @param  x、y坐标
+	* @param  angle 旋转角度，范围：0~360
+	* @param  num 要显示的数字，范围：0~4294967295
+	* @param  length 要显示数字的长度，范围：1~10
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
 void OLEDMin_DrawARatateNum(int x,int y,float angle,int num,int length,Color color){
 	char CH[15]={0};
-	for(int i=length-1;i>=0;i--)
-	{
+	for(int i=length-1;i>=0;i--){
 		CH[i]='0'+num%10;
 		num/=10;
 	}
@@ -939,16 +955,39 @@ void OLEDMin_DrawARatateNum(int x,int y,float angle,int num,int length,Color col
 }
 
 /**
-  * @brief  显示旋转放大字符
-* @param  x、y坐标，角度，CH字符，color颜色，放大倍数
-  * @retval 无
-  */
+ 	* @brief  显示旋转数字(min)
+  	* @param  x、y坐标
+	* @param  angle 旋转角度，范围：0~360
+	* @param  num 要显示的数字，范围：0~4294967295
+	* @param  length 要显示数字的长度，范围：1~10
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
+void OLEDMin_DrawANum(int x,int y,int num,int length,Color color){
+	char CH[15]={0};
+	for(int i=length-1;i>=0;i--){
+		CH[i]='0'+num%10;
+		num/=10;
+	}
+	CH[length] = '\0';
+	OLEDMin_DrawAString(x,y,CH,color);
+}
+
+/**
+  	* @brief  显示旋转放大字符
+	* @param  x、y坐标
+	* @param  angle 旋转角度，范围：0~360
+	* @param  CH 字符
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+	* @param  num 放大倍数，范围：1~8
+  	* @retval 无
+  	*/
 void OLED_AMPDrawARatateWord(int x,int y,float angle ,char CH,Color color,uint8_t num){
 	uint64_t block = (1ULL << num) - 1; // 生成 num 个连续 1
 	static uint64_t amp[32]={0};
 	memset(amp,0,256);
 	int x_r,y_r;
-  int idx = CH - ' ';
+  	int idx = CH - ' ';
 	for(int i=0;i<8;i++){
 		for(int j=0;j<8;j++){
 			for(int k=0;k<num;k++){
@@ -974,14 +1013,20 @@ void OLED_AMPDrawARatateWord(int x,int y,float angle ,char CH,Color color,uint8_
 	}
 }
 
-void OLED_DrawAAixs(int16_t num,uint16_t t,int AMP)
-{
+/**
+  	* @brief  显示ADC波形
+  	* @param  num 通道
+  	* @param  t 时间
+  	* @param  AMP 是否放大，范围：1、2
+  	* @retval 无
+  	*/
+void OLED_DrawAAixs(int16_t num,uint16_t t,int AMP){
 	if(AMP==1)
 	{
 		for(int i=0;i<128;i++)
 		{
 			OLEDPicture_total.OLEDPicture_64[i]|=(1ull<<(64-OLED_Sample_value[(t+i+128)%256][num]/64));
-			OLED_DrawALine_For_Axis(i-1,(64-OLED_Sample_value[(t+i+127)%256][num]/64),i,(64-OLED_Sample_value[(t+i+128)%256][num]/64),1);
+			OLED_DrawALine_For_Axis(i-1,(64-OLED_Sample_value[(t+i+127)%256][num]/64),i,(64-OLED_Sample_value[(t+i+128)%256][num]/64),OLED_White);
 		}
 	}
 	if(AMP==2)
@@ -989,13 +1034,19 @@ void OLED_DrawAAixs(int16_t num,uint16_t t,int AMP)
 		for(int i=0;i<128;i++)
 		{
 			OLEDPicture_total.OLEDPicture_64[i]|=(1ull<<(64-(OLED_Sample_value[(t+2*i)%256][num]+OLED_Sample_value[(t+2*i+((t%2)?1:-1))%256][num])/128));
+			OLED_DrawALine_For_Axis(i-1,(64-(OLED_Sample_value[(t+2*(i-1))%256][num]+OLED_Sample_value[(t+2*(i-1)+((t%2)?1:-1))%256][num])/128),i,(64-(OLED_Sample_value[(t+2*i)%256][num]+OLED_Sample_value[(t+2*i+((t%2)?1:-1))%256][num])/128),OLED_White);
 		}
 	}
-	
 }
 
-void OLED_DrawALine(int x,int y,int x1,int y1,Color color)
-{
+/**
+  	* @brief  画一条线
+  	* @param  x、y坐标
+	* @param  x1、y1坐标
+	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
+void OLED_DrawALine(int x,int y,int x1,int y1,Color color){
 	int dx=x1-x;
 	int dy=y1-y;
 	int x_a=(x1>x)?1:-1;
@@ -1003,13 +1054,10 @@ void OLED_DrawALine(int x,int y,int x1,int y1,Color color)
 	int x_n=x,y_n=y;
 	int length_x = (dx>0)?dx:-dx;
 	int length_y = (dy>0)?dy:-dy;
-	if(length_x>=length_y)
-	{
-		for(int i=0;i<length_x;i++)
-		{
+	if(length_x>=length_y){
+		for(int i=0;i<length_x;i++){
 			y_n=((x_n-x)*dy/dx)+y;
-			if(x_n > 0 && x_n <= 128 && y_n >0 && y_n <=64)
-			{
+			if(x_n > 0 && x_n <= 128 && y_n >0 && y_n <=64){
 				switch(color){
 					case OLED_Black:OLEDPicture_total.OLEDPicture_64[x_n]&=~(1ull<<(y_n));break;
 					case OLED_White:OLEDPicture_total.OLEDPicture_64[x_n]|= (1ull<<(y_n));break;
@@ -1018,14 +1066,10 @@ void OLED_DrawALine(int x,int y,int x1,int y1,Color color)
 			}
 			x_n+=x_a;
 		}
-	}
-	else
-	{
-		for(int i=0;i<length_y;i++)
-		{
+	}else{
+		for(int i=0;i<length_y;i++){
 			x_n=((y_n-y)*dx/dy)+x;
-			if(x_n > 0 && x_n <= 128 && y_n >0 && y_n <=64)
-			{
+			if(x_n > 0 && x_n <= 128 && y_n >0 && y_n <=64){
 				switch(color){
 					case OLED_Black:OLEDPicture_total.OLEDPicture_64[x_n]&=~(1ull<<(y_n));break;
 					case OLED_White:OLEDPicture_total.OLEDPicture_64[x_n]|= (1ull<<(y_n));break;
@@ -1037,8 +1081,14 @@ void OLED_DrawALine(int x,int y,int x1,int y1,Color color)
 	}
 }
 
-void OLED_DrawALine_For_Axis(int x,int y,int x1,int y1,Color color)
-{
+/**
+  	* @brief  Axis专用画线函数
+  	* @param  x、y坐标
+  	* @param  x1、y1坐标
+  	* @param  color 颜色，范围：OLED_Black、OLED_White、OLED_Contr
+  	* @retval 无
+  	*/
+void OLED_DrawALine_For_Axis(int x,int y,int x1,int y1,Color color){
 	int dx=x1-x;
 	int dy=y1-y;
 	int x_a=(x1>x)?1:-1;
@@ -1046,13 +1096,10 @@ void OLED_DrawALine_For_Axis(int x,int y,int x1,int y1,Color color)
 	int x_n=x,y_n=y;
 	int length_x = (dx>0)?dx:-dx;
 	int length_y = (dy>0)?dy:-dy;
-	if(length_x<length_y)
-	{
-		for(int i=0;i<length_y;i++)
-		{
+	if(length_x<length_y){
+		for(int i=0;i<length_y;i++){
 			x_n=((y_n-y)*dx/dy)+x;
-			if(x_n > 0 && x_n <= 128 && y_n >0 && y_n <=64)
-			{
+			if(x_n > 0 && x_n <= 128 && y_n >0 && y_n <=64){
 				switch(color){
 					case OLED_Black:OLEDPicture_total.OLEDPicture_64[x_n]&=~(1ull<<(y_n));break;
 					case OLED_White:OLEDPicture_total.OLEDPicture_64[x_n]|= (1ull<<(y_n));break;
@@ -1064,23 +1111,29 @@ void OLED_DrawALine_For_Axis(int x,int y,int x1,int y1,Color color)
 	}
 }
 
-void OLED_DrawAClock(int h,int min,int scend)
-{
+/**
+  	* @brief  显示旋转字符
+  	* @param  h 小时，范围：0~11
+  	* @param  min 分钟，范围：0~59
+  	* @param  second 秒钟，范围：0~59
+  	* @retval 无
+  	*/
+void OLED_DrawAClock(int h,int min,int second){
 	int h_x,h_y;
 	int m_x,m_y;
 	int s_x,s_y;
 	h_x=sin((float)-(h*pi/6+pi+min*pi/720))*10+64;
 	h_y=cos((float)-(h*pi/6+pi+min*pi/720))*10+32;
-	m_x=sin((float)-(min*pi/30+pi+scend*pi/3600))*20+64;
-	m_y=cos((float)-(min*pi/30+pi+scend*pi/3600))*20+32;
-	s_x=sin((float)-scend*pi/30+pi)*25+64;
-	s_y=cos((float)-scend*pi/30+pi)*25+32;
+	m_x=sin((float)-(min*pi/30+pi+second*pi/3600))*20+64;
+	m_y=cos((float)-(min*pi/30+pi+second*pi/3600))*20+32;
+	s_x=sin((float)-second*pi/30+pi)*25+64;
+	s_y=cos((float)-second*pi/30+pi)*25+32;
 	OLED_DrawARound(64,32,30,29,OLED_White);
 	OLED_DrawALine(64,32,h_x,h_y,OLED_White);
 	OLED_DrawALine(64,32,m_x,m_y,OLED_White);
 	OLED_DrawALine(64,32,s_x,s_y,OLED_White);
-	OLEDMin_DrawARatateWord(60,4,90,'0',OLED_White);
-	OLEDMin_DrawARatateWord(36,28,90,'9',OLED_White);
-	OLEDMin_DrawARatateWord(84,28,90,'3',OLED_White);
-	OLEDMin_DrawARatateWord(60,52,90,'6',OLED_White);
+	OLEDMin_DrawAWord(60,4,'0',OLED_White);
+	OLEDMin_DrawAWord(36,28,'9',OLED_White);
+	OLEDMin_DrawAWord(84,28,'3',OLED_White);
+	OLEDMin_DrawAWord(60,52,'6',OLED_White);
 }
