@@ -24,13 +24,14 @@ void OLED_ShowMinChar(uint8_t Line, uint8_t Column, char Char);
 void OLED_ShowMinString(uint8_t Line, uint8_t Column, char *String);
 
 
-
+void OLEDMin_DrawAWord(int x,int y,char CH,Color color);
 void OLEDMin_DrawARatateWord(int x,int y,float angle,char CH,Color color);
 void OLEDMin_AMPDrawAWord(int x,int y,char CH,Color color,uint8_t num);
 
 void OLEDMin_DrawARatateString(int x,int y,float angle,char * CH,Color color);
 
 void OLEDMin_DrawARatateNum(int x,int y,float angle,int num,int length,Color color);
+void OLEDMin_DrawANum(int x,int y,int num,int length,Color color);
 void OLEDMin_DrawAString(int x,int y,char * CH,Color color);
 
 

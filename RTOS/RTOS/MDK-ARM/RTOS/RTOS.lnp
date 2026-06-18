@@ -1,0 +1,27 @@
+--cpu Cortex-M3
+"rtos\startup_stm32f103xb.o"
+"rtos\main.o"
+"rtos\gpio.o"
+"rtos\tim.o"
+"rtos\stm32f1xx_it.o"
+"rtos\stm32f1xx_hal_msp.o"
+"rtos\elvnrtos.o"
+"rtos\oled.o"
+"rtos\stm32f1xx_hal_gpio_ex.o"
+"rtos\stm32f1xx_hal_tim.o"
+"rtos\stm32f1xx_hal_tim_ex.o"
+"rtos\stm32f1xx_hal.o"
+"rtos\stm32f1xx_hal_rcc.o"
+"rtos\stm32f1xx_hal_rcc_ex.o"
+"rtos\stm32f1xx_hal_gpio.o"
+"rtos\stm32f1xx_hal_dma.o"
+"rtos\stm32f1xx_hal_cortex.o"
+"rtos\stm32f1xx_hal_pwr.o"
+"rtos\stm32f1xx_hal_flash.o"
+"rtos\stm32f1xx_hal_flash_ex.o"
+"rtos\stm32f1xx_hal_exti.o"
+"rtos\system_stm32f1xx.o"
+--strict --scatter "RTOS\RTOS.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "RTOS.map" -o RTOS\RTOS.axf

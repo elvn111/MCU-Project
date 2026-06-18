@@ -38,6 +38,7 @@
 #include <string.h>
 #include <math.h>
 #include "task.h"
+#include "ESP_01.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,7 +66,7 @@
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
-uint8_t usart_data[128]={'1'};
+uint8_t usart_data[500]={'1'};
 uint8_t usart_data1[128]={'1'};
 uint8_t usart_reflag =0;
 uint8_t usart_reflag1 =0;
@@ -131,7 +132,7 @@ uint32_t a=1,b=5;
 char ch_library[4][16] __attribute__((aligned(32))) = {0};//
 int fputc(int ch, FILE *f){
   uint8_t temp[1] = {ch};
-  HAL_UART_Transmit(&huart2, temp, 1, 0);
+  //HAL_UART_Transmit(&huart2, temp, 1, 0);
 	if(ch=='\n'){
 		if(a!=1){
 			a=15;
@@ -199,7 +200,7 @@ int main(void)
   MX_I2C2_Init();
   //MX_IWDG_Init();
   MX_RTC_Init();
-	MX_IWDG_Init();
+	//MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
   OLED_Init();
 	IIC1_Init();
@@ -208,7 +209,10 @@ int main(void)
   lprintf("[App]:Freertos begin %d\n",HAL_GetTick());
   printf("Reset for %s \n",Reset_Show[Reset_Cause]);
   /* USER CODE END 2 */
-
+  HAL_Delay(5000);
+  printf(usart_data);
+  memset(usart_data,0,128);
+  ESP_01_Init();
   /* Init scheduler */
   osKernelInitialize();  /* Call init function for freertos objects (in cmsis_os2.c) */
   MX_FREERTOS_Init();
@@ -320,7 +324,7 @@ void USART2_IRQHandler(void)
     __HAL_UART_DISABLE_IT(&huart2,UART_IT_RXNE);
     uint8_t temp = huart2.Instance->DR;
     usart_data[0]=temp;
-    HAL_UART_Receive_DMA(&huart2,usart_data+1,127);
+    HAL_UART_Receive_DMA(&huart2,usart_data+1,499);
     __HAL_UART_ENABLE_IT(&huart2,UART_IT_IDLE);
     
   }

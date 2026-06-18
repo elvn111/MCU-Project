@@ -70,6 +70,7 @@ extern union {
 	 uint64_t OLEDPicture_64[128];
  }OLEDPicture_total;
 extern int16_t OLED_Sample_value[128][4];
+int16_t ADC_Value[5]={0}; 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -195,7 +196,7 @@ int fputc(int ch, FILE *f){
 			OLED_ShowMinString(show_num+1,1,ch_library[(b+show_num)%rowsum]);
 		}
 	}
-		HAL_Delay(50);
+		HAL_Delay(1);
     return ch;
 }
 
@@ -243,6 +244,7 @@ int main(void)
   //MX_IWDG_Init();
   __HAL_RCC_PWR_CLK_ENABLE();
   lprintf("[App]:Freertos begin %d\n",HAL_GetTick());
+  printf("Made by ELVN\n");
   printf("Reset for %s \n",Reset_Show[Reset_Cause]);
   /* USER CODE END 2 */
 
@@ -258,17 +260,10 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	//OLED_Clear();
-	int a=32;
-	int a_a=1;
-	int b=0;
-	int b_b=6;
-	int x=1,y=1,angle=0,middle=0;
-	int x1_r=0,y1_r=0,x2_r=0,y2_r=0,x3_r=0,y3_r=0,x4_r=0,y4_r=0;
+	int x=1,y=1;
 	int fps,count;
-	int biankuang=4;
-	int dsb =10;
-	uint16_t adc_num[4]={0};
-	int h,m,s=30;
+  int angle=0;
+	int i=0;
 //	for(int i=0;i<314;i++)
 //	{
 //		OLED_Sample_value[i]=(int16_t)(sin(i*0.1)*y);
@@ -276,115 +271,59 @@ int main(void)
 	uint8_t z=0;
 	//HAL_ADC_Start_DMA(&hadc1,(uint32_t *)OLED_Sample_value[0],4);
   while (1)
-  {
-		HAL_ADC_Start_DMA(&hadc1,(uint32_t *)OLED_Sample_value[z++],4);
-		memset(OLEDPicture_total.OLEDPicture_8[0],0x00,1024);
-		//OLED_AMPDrawARatateWord(16,16,b,'B',OLED_White,1);
-//		OLED_DrawARatateString(x,y,angle,(char *)usart_data1+1,OLED_White);
-//		rotate_point(x+4*strlen((char *)usart_data1+1),y+8,angle,x,y,&x1_r,&y1_r);
-//		rotate_point(x+4*strlen((char *)usart_data1+1),y+8,angle,x,y+16,&x2_r,&y2_r);
-//		rotate_point(x+4*strlen((char *)usart_data1+1),y+8,angle,x+8*strlen((char *)usart_data1+1),y+16,&x3_r,&y3_r);
-//		rotate_point(x+4*strlen((char *)usart_data1+1),y+8,angle,x+8*strlen((char *)usart_data1+1),y,&x4_r,&y4_r);
-//		OLED_DrawAquard(x1_r,y1_r,x2_r,y2_r,x3_r,y3_r,x4_r,y4_r,OLED_Contr);
-		OLED_DrawALine(x,64,32,0,1);
-		OLEDMin_DrawARatateNum(0,56,0,fps,2,OLED_White);
-		OLED_DrawAClock(0,m,s);
-		//HAL_ADC_Start_DMA(&hadc1,(uint32_t *)OLED_Sample_value[0],512);
-//		OLED_DrawAquard(0,0,0,64,128,64,128,0,OLED_White);
-//		OLED_DrawAquard(0,0,0,0,128,64,128,64,OLED_White);
-//		OLED_DrawAquard(0+biankuang,0+2*biankuang,0+biankuang,64-biankuang,128-biankuang,64-biankuang,128-biankuang,0+2*biankuang,OLED_Black);
-//		OLED_DrawAquard(0,0,0,0,128,64,128,64,OLED_White);
-//		OLED_DrawAquard(8,0,9,0,9,64,9,64,OLED_White);
-//		for(int i=0;i<5;i++)
+	{
+		HAL_ADC_Start_DMA(&hadc1,(uint32_t *)ADC_Value,4);
+		//printf("%04d %04d %04d %04d\n",ADC_Value[0],ADC_Value[1],ADC_Value[2],ADC_Value[3]);
+		HAL_UART_Transmit(&huart2,(uint8_t *)ADC_Value,8,10);
+		HAL_UART_Transmit(&huart2,"\n",1,10);
+		HAL_Delay(2);
+		//HAL_ADC_Start_DMA(&hadc1,(uint32_t *)OLED_Sample_value[z++],4);
+		//memset(OLEDPicture_total.OLEDPicture_8[0],0x00,1024);
+
+		//OLEDMin_DrawARatateNum(0,56,0,fps,2,OLED_White);
+    // OLED3D_DrawAFace(  64,32, 32,
+    //                    32, 0,  0,
+    //                   -16, 16, 16,
+    //                   -16, -16,-16);
+    // OLED3D_DrawARotateFace(64,32,32,0,23,16,-23,0,16,0,-23,16,23,0,16,angle);
+    // OLED3D_DrawARotateFace(64,32,32,0,23,-16,23,0,-16,0,-23,-16,-23,0,-16,angle);
+    // OLED3D_DrawARotateFace(64,32,32,-23,0,16,-23,0,-16,0,-23,-16,0,-23,16,angle);
+    // OLED3D_DrawARotateFace(64,32,32,23,0,16,0,-23,16,0,-23,-16,23,0,-16,angle);
+    // OLED3D_DrawARotateFace(64,32,32,0,23,16,23,0,16,23,0,-16,0,23,-16,angle);
+    // OLED3D_DrawARotateFace(64,32,32,0,-23,16,-23,0,16,-23,0,-16,0,-23,-16,angle);
+//    OLED3D_DrawARotateFace(64,0,32, 14,22,16, -22,14,16, -14,-22,16, 22,-14,16, angle,angle,angle);
+//    OLED3D_DrawARotateFace(64,0,32, 14,22,-16, 22,-14,-16, -14,-22,-16, -22,14,-16, angle,angle,angle);
+//    OLED3D_DrawARotateFace(64,0,32,-22,14,16, -22,14,-16, -14,-22,-16, -14,-22,16, angle,angle,angle);
+//    OLED3D_DrawARotateFace(64,0,32, 22,-14,16, 14,22,16, 14,22,-16, 22,-14,-16, angle,angle,angle);
+//    OLED3D_DrawARotateFace(64,0,32, 14,22,16, 22,-14,16, 22,-14,-16, 14,22,-16, angle,angle,angle);
+//    OLED3D_DrawARotateFace(64,0,32,-14,-22,16, -22,14,16, -22,14,-16, -14,-22,-16, angle,angle,angle);
+//    OLEDMin_DrawANum(0,56,fps,2,OLED_White);
+//		fps=1000/(HAL_GetTick()-count);
+//		count=HAL_GetTick();
+//    if(angle==360)
+//      angle=0;
+//    else
+//      angle++;
+//		OLED_ShowPicture();
+//		if(usart_data1[0]=='t')
 //		{
-//			OLED_DrawAquard(8,8+i*16,9,9+i*16,128,9+i*16,128,8+i*16,OLED_White);
+//			if(y>0)
+//			y--;
+//		}else if(usart_data1[0]=='l'){
+//			if(x>0)
+//				x=(x+31)%64;
+//		}else if(usart_data1[0]=='m'){
+//			
+//		}else if(usart_data1[0]=='r'){
+//				x=(x+1)%64;
+//		}else if(usart_data1[0]=='b'){
+//			if(y<20)
+//				y++;
+//		}else if(usart_data1[0]=='a'){
+
+//		}else if(usart_data1[0]=='c'){
+
 //		}
-//		
-		//OLED_DrawAquard(8,24,9,25,128,25,128,24,OLED_White);
-		
-//		OLED_DrawARound(64,36,20,0,OLED_White);
-//		OLED_DrawAPolygon(64,36,4,30,-90,OLED_White);
-//		OLED_DrawARound(64,36,20,19,OLED_White);
-//		OLED_DrawARound(64,36,30,29,OLED_White);
-		//OLED_DrawAString(32,48,"Warrning",OLED_White);
-//		OLEDMin_DrawARatateWord(60,9,90,'M',OLED_Contr);
-//		OLEDMin_DrawARatateWord(44,16,40,'B',OLED_Contr);
-//		OLEDMin_DrawARatateWord(78,18,140,'W',OLED_Contr);
-		
-//		OLED_DrawARound(32,40,4,OLED_White);
-//		OLED_DrawARound(96,40,4,OLED_White);
-//		OLED_DrawAquard(32,36,
-//										96,36,
-//										96,44,
-//										32,44,OLED_White);
-		
-//		OLED_DrawARound(32,40,2,OLED_Black);
-//		OLED_DrawARound(96,40,2,OLED_Black);
-//		OLED_DrawAquard(32,38,
-//										96,38,
-//										96,42,
-//										32,42,OLED_Black);
-		
-//		OLED_DrawARound(a,40,2,OLED_White);
-//		OLED_DrawARound(96,40,2,OLED_White);
-//		OLED_DrawAquard(a ,38,
-//										96,38,
-//										96,42,
-//										a ,42,OLED_White);
-		//OLED_DrawAAixs();
-
-
-		fps=1000/(HAL_GetTick()-count);
-		count=HAL_GetTick();
-
-		OLED_ShowPicture();
-		if(usart_data1[0]=='t')
-		{
-			if(y>0)
-			y--;
-		}else if(usart_data1[0]=='l'){
-			if(x>0)
-				x=(x+31)%64;
-		}else if(usart_data1[0]=='m'){
-			
-		}else if(usart_data1[0]=='r'){
-				x=(x+1)%64;
-		}else if(usart_data1[0]=='b'){
-			if(y<20)
-				y++;
-		}else if(usart_data1[0]=='a'){
-			angle++;
-		}else if(usart_data1[0]=='c'){
-			angle--;
-		}
-		h=(h+1)%12;
-		m=(m+1)%60;
-		s=(s+1)%60;
-		HAL_Delay(500);
-		
-		
-		usart_data1[0]=0;
-		if(a>96||a<32)
-		{
-			a_a=-a_a;
-		}
-		a+=a_a;
-		if(b>20||b<0)
-		{
-			b_b=-b_b;
-		}
-		b+=b_b;
-		if(usart_reflag==1)
-    {
-      memset(usart_data1,0x00,128);
-      usart_reflag=0;
-    }
-    else if(usart_reflag1==1)
-    {
-      memcpy(usart_data1,usart_data,128);
-      memset(usart_data,0x00,128);
-      usart_reflag1=0;
-    }
 		//HAL_Delay(50);
     /* USER CODE BEGIN 3 */
   }
