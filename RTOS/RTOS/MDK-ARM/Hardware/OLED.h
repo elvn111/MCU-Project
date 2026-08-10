@@ -1,13 +1,10 @@
 #ifndef __OLED_H
 #define __OLED_H
 
-<<<<<<< HEAD
 #include "gpio.h"
 #include <string.h>
 #include "stdio.h"
 #include <math.h>
-=======
->>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
 
  typedef enum{
 	OLED_Black = 0,

@@ -43,11 +43,7 @@ void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 720-1;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-<<<<<<< HEAD
   htim1.Init.Period = 999;
-=======
-  htim1.Init.Period = 9999;
->>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
