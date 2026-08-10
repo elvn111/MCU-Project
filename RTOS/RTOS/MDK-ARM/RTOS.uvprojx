@@ -184,8 +184,11 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
+<<<<<<< HEAD
             <RvdsMve>0</RvdsMve>
             <RvdsCdeCp>0</RvdsCdeCp>
+=======
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -326,7 +329,10 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
+<<<<<<< HEAD
             <uGnu>0</uGnu>
+=======
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
             <useXO>0</useXO>
             <v6Lang>1</v6Lang>
             <v6LangP>1</v6LangP>
@@ -352,7 +358,11 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
+<<<<<<< HEAD
             <ClangAsOpt>4</ClangAsOpt>
+=======
+            <uClangAs>0</uClangAs>
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>

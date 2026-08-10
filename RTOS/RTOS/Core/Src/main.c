@@ -50,8 +50,12 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+<<<<<<< HEAD
 void Task1(void*point);
 //task_retrun Task1(task_parameter a);
+=======
+task_retrun Task1(task_parameter a);
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -61,7 +65,10 @@ void Task1(void*point);
 
 /* USER CODE END 0 */
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
 /**
   * @brief  The application entry point.
   * @retval int
@@ -99,7 +106,17 @@ int main(void)
 
   /* USER CODE END 2 */
   OLED_ShowNum(1,7,ELVNRTOS_Init(),4);
+<<<<<<< HEAD
   ETask_Creat(Task1,0,128);
+=======
+  Task_InitStruct Task1_Struct ={
+    .Handle     = 0,  // 直接用静态数组
+    .Fuction    = Task1,
+    .Size       = 128,
+    .Priority = 2
+  };
+  ETask_Creat(&Task1_Struct);
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
   HAL_SuspendTick();
 
   ETask_StartScheduler();
@@ -158,12 +175,19 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+<<<<<<< HEAD
 void Task1(void* a)
+=======
+task_retrun Task1(task_parameter a)
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
 {
   while(1)
   {
     OLED_ShowString(2,1,"ELVN");
+<<<<<<< HEAD
     ELVNRTOS_Delete(NULL);
+=======
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
     //Etask_Delay(9178);
   }
 }

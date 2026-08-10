@@ -1,5 +1,14 @@
+<<<<<<< HEAD
 #include "OLED.h"
 #include "OLED_Font.h"
+=======
+#include "gpio.h"
+#include "OLED_Font.h"
+#include <string.h>
+#include "stdio.h"
+#include <math.h>
+#include "OLED.h"
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
 
 /*引脚配置*/
 #define OLED_SCL_PORT    GPIOB

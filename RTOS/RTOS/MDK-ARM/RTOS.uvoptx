@@ -10,7 +10,11 @@
     <aExt>*.s*; *.src; *.a*</aExt>
     <oExt>*.obj; *.o</oExt>
     <lExt>*.lib</lExt>
+<<<<<<< HEAD
     <tExt>*.txt; *.h; *.inc; *.md</tExt>
+=======
+    <tExt>*.txt; *.h; *.inc</tExt>
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
     <pExt>*.plm</pExt>
     <CppX>*.cpp</CppX>
     <nMigrate>0</nMigrate>
@@ -101,8 +105,11 @@
         <sRunDeb>0</sRunDeb>
         <sLrtime>0</sLrtime>
         <bEvRecOn>1</bEvRecOn>
+<<<<<<< HEAD
         <bSchkAxf>0</bSchkAxf>
         <bTchkAxf>0</bTchkAxf>
+=======
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
         <nTsel>5</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
@@ -199,7 +206,10 @@
       </SystemViewers>
       <DebugDescription>
         <Enable>1</Enable>
+<<<<<<< HEAD
         <EnableFlashSeq>0</EnableFlashSeq>
+=======
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
         <EnableLog>0</EnableLog>
         <Protocol>2</Protocol>
         <DbgClock>10000000</DbgClock>

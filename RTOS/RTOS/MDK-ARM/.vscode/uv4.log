@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Rebuild target 'RTOS'
 assembling startup_stm32f103xb.s...
@@ -50,3 +51,8 @@ Program Size: Code=7560 RO-data=2592 RW-data=28 ZI-data=3620
 FromELF: creating hex file...
 "RTOS\RTOS.axf" - 0 Error(s), 10 Warning(s).
 Build Time Elapsed:  00:00:10
+=======
+Load "RTOS\\RTOS.axf" 
+Erase Done.Programming Done.Verify OK.Application running ...
+Flash Load finished at 09:16:16
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc

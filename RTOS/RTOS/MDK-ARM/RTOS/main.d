@@ -30,8 +30,14 @@ rtos\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 rtos\main.o: ../Core/Inc/tim.h
 rtos\main.o: ../Core/Inc/gpio.h
 rtos\main.o: .\Hardware\OLED.h
+<<<<<<< HEAD
 rtos\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 rtos\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 rtos\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 rtos\main.o: .\User\ELVNRTOS.h
 rtos\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+=======
+rtos\main.o: .\User\ELVNRTOS.h
+rtos\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+rtos\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+>>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
