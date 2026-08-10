@@ -33,5 +33,5 @@ void ELVNRTOS_Delete(TaskControlBlock *task);
 // void Etask_Delay(uint32_t num);
 void Etask_Delay(uint32_t num);
 void ETask_Yield(void);
-void Heap_Release(uint32_t *stack_base, uint32_t* stack_top);
+uint8_t Heap_Release(uint8_t * addr,uint16_t size);
 #endif /* __ELVNRTOS_H__ */

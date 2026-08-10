@@ -1,6 +1,5 @@
 rtos\elvnrtos.o: User\ELVNRTOS.c
 rtos\elvnrtos.o: User\ELVNRTOS.h
-<<<<<<< HEAD
 rtos\elvnrtos.o: .\Hardware\OLED.h
 rtos\elvnrtos.o: ../Core/Inc/gpio.h
 rtos\elvnrtos.o: ../Core/Inc/main.h
@@ -12,26 +11,11 @@ rtos\elvnrtos.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h
 rtos\elvnrtos.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h
 rtos\elvnrtos.o: ../Drivers/CMSIS/Include/core_cm3.h
 rtos\elvnrtos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-=======
-rtos\elvnrtos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-rtos\elvnrtos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-rtos\elvnrtos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-rtos\elvnrtos.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h
-rtos\elvnrtos.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h
-rtos\elvnrtos.o: ../Drivers/CMSIS/Include/core_cm3.h
->>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
 rtos\elvnrtos.o: ../Drivers/CMSIS/Include/cmsis_version.h
 rtos\elvnrtos.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
 rtos\elvnrtos.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
 rtos\elvnrtos.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h
 rtos\elvnrtos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
-<<<<<<< HEAD
-=======
-rtos\elvnrtos.o: ../Core/Inc/stm32f1xx_hal_conf.h
-rtos\elvnrtos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h
-rtos\elvnrtos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h
-rtos\elvnrtos.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h
->>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
 rtos\elvnrtos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
 rtos\elvnrtos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 rtos\elvnrtos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h
@@ -46,14 +30,8 @@ rtos\elvnrtos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
 rtos\elvnrtos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 rtos\elvnrtos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 rtos\elvnrtos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
-<<<<<<< HEAD
 rtos\elvnrtos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 rtos\elvnrtos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 rtos\elvnrtos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 rtos\elvnrtos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 rtos\elvnrtos.o: ../Core/Inc/tim.h
-=======
-rtos\elvnrtos.o: ../Core/Inc/tim.h
-rtos\elvnrtos.o: ../Core/Inc/main.h
-rtos\elvnrtos.o: .\Hardware\OLED.h
->>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc

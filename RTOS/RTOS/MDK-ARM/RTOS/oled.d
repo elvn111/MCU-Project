@@ -1,8 +1,5 @@
 rtos\oled.o: Hardware\OLED.c
-<<<<<<< HEAD
 rtos\oled.o: Hardware\OLED.h
-=======
->>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc
 rtos\oled.o: ../Core/Inc/gpio.h
 rtos\oled.o: ../Core/Inc/main.h
 rtos\oled.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
@@ -32,15 +29,7 @@ rtos\oled.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
 rtos\oled.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 rtos\oled.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 rtos\oled.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
-<<<<<<< HEAD
 rtos\oled.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 rtos\oled.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 rtos\oled.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 rtos\oled.o: Hardware\OLED_Font.h
-=======
-rtos\oled.o: Hardware\OLED_Font.h
-rtos\oled.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-rtos\oled.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-rtos\oled.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
-rtos\oled.o: Hardware\OLED.h
->>>>>>> 83d35703597c9c86b0322e80814e6b888f7b0cdc

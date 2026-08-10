@@ -1,15 +1,12 @@
 #include "ELVNRTOS.h"
-//#include "stm32f1xx.h"
 
 
-#define NODE_POOL_SIZE   20   /* 节点池容量 */
-#define PRIORITY_COUNT   10    /* 优先级数量，合法范围 0 ~ PRIORITY_COUNT-1 */
-#define TASK_BLOCK_NUM   128
+#define PRIORITY_COUNT   10    
+#define TASK_BLOCK_NUM   256
 #define TASK_BLOCK_SIZE  8
 #define TASK_HEAP_SIZE (TASK_BLOCK_NUM * TASK_BLOCK_SIZE)
 
-/* port.h —— 你的 RTOS 缺这个 */
-#define ENTER_CRITICAL()  __disable_irq()   /* 简单可靠：全关中断 */
+#define ENTER_CRITICAL()  __disable_irq()
 #define EXIT_CRITICAL()   __enable_irq()
 
 extern TIM_HandleTypeDef htim1;
@@ -20,21 +17,12 @@ typedef enum {
     TASK_STATE_SUSPENDED = 9999
 } TaskState;
 
-/* 节点分配状态 */
 typedef enum {
     STATE_FREE = 0,   /* 空闲：可分配 */
     STATE_BUSY = 1    /* 占用：已入队 */
 } State;
 
-
-/* ---- 节点内存池 ---- */
-/* 编译期静态分配，运行期零堆内存申请；静态存储期默认零初始化 */
-static TaskControlBlock  node_pool[NODE_POOL_SIZE];
-/* 节点状态表，与 node_pool[] 按下标一一对应 */
-static State node_pool_state[NODE_POOL_SIZE];
-
-// __attribute__((__align(4)))uint32_t task_heap[TASK_BLOCK_NUM][TASK_BLOCK_SIZE];
-__attribute__((__align(4)))char task_heap[TASK_BLOCK_NUM][TASK_BLOCK_SIZE];
+__attribute__((__align(4)))uint8_t task_heap[TASK_BLOCK_NUM][TASK_BLOCK_SIZE];
 static State task_block_state[TASK_BLOCK_NUM];
 
 /* ---- 按优先级分链的就绪队列 ---- */
@@ -141,7 +129,7 @@ void ELVNRTOS_IdleTask(void* a){
     }
 }
 
-uint8_t Heap_Allocate(uint16_t size,uint32_t * *stack_base,uint32_t * *stack_top){
+void * Heap_Allocate(uint16_t size){
     if (size == 0)return 0;
     int num = (size + TASK_BLOCK_SIZE - 1) / TASK_BLOCK_SIZE;
     int count = 0;
@@ -161,68 +149,58 @@ uint8_t Heap_Allocate(uint16_t size,uint32_t * *stack_base,uint32_t * *stack_top
                 for (int j = 0;j < num;j++){
                     task_block_state[i-j] = STATE_BUSY;
                 }
-                *stack_top = (uint32_t*)&task_heap[i][TASK_BLOCK_SIZE];
-                *stack_base = addr;
                 EXIT_CRITICAL();
-                return 1;
+                return addr;
             }
         }
     }
     EXIT_CRITICAL();
     return 0;
 }
-//666
-void Heap_Release(uint32_t *stack_base, uint32_t* stack_top)
+uint8_t Heap_Release(uint8_t * addr,uint16_t size)
 {
     uint32_t byte_offset;
     uint32_t block_index;
     uint32_t block_count;
-    uint32_t size;
     uint32_t i;
     ENTER_CRITICAL();
     /* 参数校验：node 和栈底都不能为空 */
-    if (stack_top == NULL || stack_base == NULL) {
+    if (addr == NULL ) {
         EXIT_CRITICAL();
-        return;
+        return 0;
     }
 
-    /* 栈大小 = 上边界 - 下边界（字节） */
-    size = (uint32_t)((uint8_t*)stack_top - (uint8_t*)stack_base);
     if (size == 0) {
         EXIT_CRITICAL();
-        return;
+        return 0;
     }
 
-    /* 关键：偏移必须从栈底算，栈底才是分配块的起点 */
-    byte_offset = (uint32_t)((uint8_t*)stack_base - (uint8_t*)task_heap);
+    byte_offset = (uint32_t)((uint8_t*)addr - (uint8_t*)task_heap);
     if (byte_offset >= TASK_HEAP_SIZE || (byte_offset % TASK_BLOCK_SIZE) != 0) {
         EXIT_CRITICAL();
-        return;   /* 不属于本池，或栈底不在块边界 */
+        return 0;  
     }
 
     block_index = byte_offset / TASK_BLOCK_SIZE;
     block_count = (size + TASK_BLOCK_SIZE - 1) / TASK_BLOCK_SIZE;
 
-    /* 越界检查 */
     if (block_index + block_count > TASK_BLOCK_NUM) {
         EXIT_CRITICAL();
-        return;
+        return 0;
     }
 
-    /* 防重复释放：起始块必须是 BUSY */
     if (task_block_state[block_index] != STATE_BUSY) {
         EXIT_CRITICAL();
-        return;
+        return 0;
     }
 
-    /* 标记空闲 */
     for (i = 0; i < block_count; i++) {
         task_block_state[block_index + i] = STATE_FREE;
     }
 
-    /* 清零释放区域：从栈底开始 */
-    memset((uint8_t*)stack_base, 0, TASK_BLOCK_SIZE * block_count);
+    memset((uint8_t*)addr, 0, TASK_BLOCK_SIZE * block_count);
     EXIT_CRITICAL();
+    return 1;
 }
 
 
@@ -241,38 +219,32 @@ TaskControlBlock* NodePool_Allocate(uint8_t priority){
         return NULL;
     }
 
-    /* 线性扫描节点池，寻找首个空闲节点 */
-    for (i = 0; i < NODE_POOL_SIZE; i++) {
-        if (node_pool_state[i] != STATE_FREE) {
-            continue;
-        }
-
-        node = &node_pool[i];
-
-        /* 占用节点 */
-        node_pool_state[i] = STATE_BUSY;
-        /* 记录优先级：释放时需依据该字段定位所属队列 */
-        node->priority = priority;
-        /* 清空指针域，避免复用历史数据产生悬空引用 */
-        node->prev = NULL;
-        node->next = NULL;
-
-        /* 入队：追加到对应优先级队列的尾部 */
-        if (ready_count[priority] == 0) {
-            ready_head[priority] = node;
-            ready_tail[priority] = node;
-        } else {
-            ready_tail[priority]->next = node;
-            node->prev = ready_tail[priority];
-            ready_tail[priority] = node;
-        }
-
-        /* 更新队列计数与总计数 */
-        ready_count[priority]++;
-        ready_total++;
+    node=Heap_Allocate(sizeof(TaskControlBlock));
+    if(node==NULL){
         EXIT_CRITICAL();
-        return node;
+        return NULL;
     }
+
+    node->priority = priority;
+    /* 清空指针域，避免复用历史数据产生悬空引用 */
+    node->prev = NULL;
+    node->next = NULL;
+
+    /* 入队：追加到对应优先级队列的尾部 */
+    if (ready_count[priority] == 0) {
+        ready_head[priority] = node;
+        ready_tail[priority] = node;
+    } else {
+        ready_tail[priority]->next = node;
+        node->prev = ready_tail[priority];
+        ready_tail[priority] = node;
+    }
+
+    /* 更新队列计数与总计数 */
+    ready_count[priority]++;
+    ready_total++;
+    EXIT_CRITICAL();
+    return node;
 
     /* 节点池已满，分配失败 */
     EXIT_CRITICAL();
@@ -288,7 +260,6 @@ TaskControlBlock* NodePool_Allocate(uint8_t priority){
  */
 int NodePool_Release(TaskControlBlock* node)
 {
-    uint32_t index;
     uint8_t priority;
 
     /* 参数合法性校验：任一条件不满足则直接拒绝 */
@@ -301,30 +272,10 @@ int NodePool_Release(TaskControlBlock* node)
         EXIT_CRITICAL();
         return 0;
     }
-    if (node < node_pool || node >= node_pool + NODE_POOL_SIZE) {  /* 指针越界 */
-        EXIT_CRITICAL();
-        return 0;
-    }
 
-    /* 依据指针差值计算节点在节点池中的下标 */
-    index = (uint32_t)(node - node_pool);
     /* 读取节点所属优先级 */
     priority = node->priority;
-    /* 重复释放保护：节点状态非占用即视为已释放 */
-    if (node_pool_state[index] != STATE_BUSY) {
-        EXIT_CRITICAL();
-        return 0;
-    }
 
-    /* 摘链操作，按节点位置分四种情况处理：
-     * 1) 该优先级队列中唯一节点（队首与队尾重合）：队列整体置空；
-     * 2) 队首节点：队首指针后移；
-     * 3) 队尾节点：队尾指针前移；
-     * 4) 中间节点：前驱与后继节点直接互连。
-     *
-     * 注意：单节点判定必须基于 ready_count[priority]（本队列计数），
-     * 而非 ready_total（全局总数），否则其他优先级的节点存在时，
-     * 本队列唯一节点会走队首/队尾分支并对空指针解引用。 */
     if (ready_count[priority] == 1) {
         ready_head[priority] = NULL;
         ready_tail[priority] = NULL;
@@ -338,11 +289,10 @@ int NodePool_Release(TaskControlBlock* node)
         node->prev->next = node->next;
         node->next->prev = node->prev;
     }
-
+    Heap_Release((uint8_t*)node,sizeof(TaskControlBlock));
     /* 统一收尾：清除指针域、归还节点、更新计数 */
     node->prev = NULL;
     node->next = NULL;
-    node_pool_state[index] = STATE_FREE;
     ready_count[priority]--;
     ready_total--;
     EXIT_CRITICAL();
@@ -351,20 +301,24 @@ int NodePool_Release(TaskControlBlock* node)
 
 uint8_t ETask_Creat(TaskFunction taskfunction,uint8_t priority,uint32_t size)
 {
-    uint32_t* stack_top;
     uint32_t* stack_base;
+    uint32_t* stack_top;
+    TaskControlBlock *node;
     ENTER_CRITICAL();
-    if (Heap_Allocate(size,&stack_base,&stack_top)==0){
+    stack_base=(uint32_t *)Heap_Allocate(size);
+    stack_top=(uint32_t * )((uint8_t *)stack_base+((size + TASK_BLOCK_SIZE - 1) / TASK_BLOCK_SIZE)*TASK_BLOCK_SIZE);
+    if(stack_base==NULL)
+    {
         EXIT_CRITICAL();
         return 0;
     }
-    if (stack_top == 0){
+    if ((uint32_t*)stack_top >(uint32_t*)&task_heap[TASK_BLOCK_NUM-1][TASK_BLOCK_SIZE-1]){
         EXIT_CRITICAL();
         return 0;
     }
-    TaskControlBlock *node=NodePool_Allocate(priority);
+    node=NodePool_Allocate(priority);
     if (node == 0) {
-        Heap_Release(stack_base, stack_top);
+        Heap_Release((uint8_t *)stack_base, size);
         EXIT_CRITICAL();
         return 0;
     }
@@ -431,7 +385,7 @@ uint8_t ELVNRTOS_Init(void){
     HAL_NVIC_SetPriority(PendSV_IRQn,15,0);
     NVIC_SetPriority(SysTick_IRQn, 0xF0);  // 比 PendSV 高
     //创建0号任务
-    if(ETask_Creat(ELVNRTOS_IdleTask,0,128)==0)
+    if(ETask_Creat(ELVNRTOS_IdleTask,0,256)==0)
         return 0;
     Task_Current_TCB=ready_head[0];
     return 1;
@@ -443,7 +397,7 @@ void ETask_Scheduler(void){
     TaskControlBlock *reg;
     if (task_delete != NULL) {
         if (NodePool_Release(task_delete) == 1) {
-            Heap_Release(task_delete->stack_base, task_delete->stack_top);
+            Heap_Release((uint8_t *)task_delete->stack_base,task_delete->size);
         }
         task_delete = NULL;
     }

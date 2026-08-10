@@ -99,7 +99,7 @@ int main(void)
 
   /* USER CODE END 2 */
   OLED_ShowNum(1,7,ELVNRTOS_Init(),4);
-  ETask_Creat(Task1,0,128);
+  ETask_Creat(Task1,9,256);
   HAL_SuspendTick();
 
   ETask_StartScheduler();
@@ -163,8 +163,8 @@ void Task1(void* a)
   while(1)
   {
     OLED_ShowString(2,1,"ELVN");
-    ELVNRTOS_Delete(NULL);
-    //Etask_Delay(9178);
+    //ELVNRTOS_Delete(NULL);
+    Etask_Delay(20);
   }
 }
 /* USER CODE END 4 */
