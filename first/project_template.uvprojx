@@ -187,7 +187,7 @@
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
-            <useUlib>0</useUlib>
+            <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>0</nSecure>
@@ -399,6 +399,16 @@
               <FileName>stm32f10x_conf.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\User\stm32f10x_conf.h</FilePath>
+            </File>
+            <File>
+              <FileName>ELVNRTOS.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\ELVNRTOS.h</FilePath>
+            </File>
+            <File>
+              <FileName>ELVNRTOS.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\ELVNRTOS.c</FilePath>
             </File>
           </Files>
         </Group>
