@@ -7,8 +7,8 @@
 #include "KEY.h"
 
 extern EventGroupHandle_t EventGroupHandle;
-extern uint8_t usart_data[128];
-extern uint8_t usart_data1[128];
+extern uint8_t usart_data[512];
+extern uint8_t usart_data1[512];
 
 /**
   * @brief  按键检测

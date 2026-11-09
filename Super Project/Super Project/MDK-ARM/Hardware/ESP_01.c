@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-extern char usart_data[128];
+extern char usart_data[512];
 const char ESP_01_Command[][50] = {
     {"AT+CIPSTART=\"TCP\",\"192.168.137.1\",8081\r\n"},
     {"AT+CIPMODE=1\r\n"},

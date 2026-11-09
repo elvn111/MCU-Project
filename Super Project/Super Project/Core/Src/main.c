@@ -29,6 +29,7 @@
 #include "iwdg.h"
 #include "rtc.h"
 #include "stm32f1xx_hal_conf.h"
+#include "semphr.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -38,7 +39,6 @@
 #include <string.h>
 #include <math.h>
 #include "task.h"
-#include "ESP_01.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -66,22 +66,23 @@
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
-uint8_t usart_data[500]={'1'};
-uint8_t usart_data1[128]={'1'};
+uint8_t usart_data[512]={'1'};
+uint8_t usart_data1[512]={'1'};
 uint8_t usart_reflag =0;
 uint8_t usart_reflag1 =0;
+extern osSemaphoreId_t UsartISRTask_semHandle;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-// 重启原因枚举
+// ??????
 typedef enum {
-    RESET_POR = 0,    // 上电复位
-    RESET_PIN,        // 复位脚复位
-    RESET_IWDG,       // 独立看门狗 IWDG
-    RESET_WWDG,       // 窗口看门狗 WWDG
-    RESET_SOFT,       // 软件复位
-    RESET_UNKNOWN     // 未知
+    RESET_POR = 0,    // ????
+    RESET_PIN,        // ?????
+    RESET_IWDG,       // ????? IWDG
+    RESET_WWDG,       // ????? WWDG
+    RESET_SOFT,       // ????
+    RESET_UNKNOWN     // ??
 } Reset_Cause_t;
 
 Reset_Cause_t Reset_Cause = RESET_UNKNOWN;
@@ -94,35 +95,35 @@ const char Reset_Show[6][15]={
     "RESET_SOFT",     
     "RESET_UNKNOWN"    
 };
-// 获取复位原因（必须在 HAL 初始化之前调用！）
+// ??????(??? HAL ???????!)
 void Check_Reset_Reason(void)
 {
     if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST))
     {
-        Reset_Cause = RESET_IWDG;  // IWDG 复位
+        Reset_Cause = RESET_IWDG;  // IWDG ??
     }
     else if (__HAL_RCC_GET_FLAG(RCC_FLAG_WWDGRST))
     {
-        Reset_Cause = RESET_WWDG;  // WWDG 复位
+        Reset_Cause = RESET_WWDG;  // WWDG ??
     }
     else if (__HAL_RCC_GET_FLAG(RCC_FLAG_PINRST))
     {
-        Reset_Cause = RESET_PIN;   // 复位按键
+        Reset_Cause = RESET_PIN;   // ????
     }
     else if (__HAL_RCC_GET_FLAG(RCC_FLAG_PORRST))
     {
-        Reset_Cause = RESET_POR;   // 上电
+        Reset_Cause = RESET_POR;   // ??
     }
     else if (__HAL_RCC_GET_FLAG(RCC_FLAG_SFTRST))
     {
-        Reset_Cause = RESET_SOFT;  // 软件复位
+        Reset_Cause = RESET_SOFT;  // ????
     }
     else
     {
         Reset_Cause = RESET_UNKNOWN;
     }
 
-    // 清除所有复位标志（必须清！否则下次判断错误）
+    // ????????(???!????????)
     __HAL_RCC_CLEAR_RESET_FLAGS();
 }
 
@@ -158,7 +159,7 @@ int fputc(int ch, FILE *f){
 		OLED_ShowString(2,1,ch_library[(b+1)%4]);
 		OLED_ShowString(3,1,ch_library[(b+2)%4]);
 	}
-		HAL_Delay(50);
+		//HAL_Delay(50);
     return ch;
 }
 /* USER CODE END 0 */
@@ -171,7 +172,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	__enable_irq();//��Ϊappʱ���bootload����
+	__enable_irq();//???app????bootload????
   Check_Reset_Reason();
   /* USER CODE END 1 */
 
@@ -197,7 +198,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
-  MX_I2C2_Init();
+  //MX_I2C2_Init();
   //MX_IWDG_Init();
   MX_RTC_Init();
 	//MX_IWDG_Init();
@@ -209,10 +210,7 @@ int main(void)
   lprintf("[App]:Freertos begin %d\n",HAL_GetTick());
   printf("Reset for %s \n",Reset_Show[Reset_Cause]);
   /* USER CODE END 2 */
-  HAL_Delay(5000);
-  printf(usart_data);
-  memset(usart_data,0,128);
-  ESP_01_Init();
+
   /* Init scheduler */
   osKernelInitialize();  /* Call init function for freertos objects (in cmsis_os2.c) */
   MX_FREERTOS_Init();
@@ -324,13 +322,14 @@ void USART2_IRQHandler(void)
     __HAL_UART_DISABLE_IT(&huart2,UART_IT_RXNE);
     uint8_t temp = huart2.Instance->DR;
     usart_data[0]=temp;
-    HAL_UART_Receive_DMA(&huart2,usart_data+1,499);
+    HAL_UART_Receive_DMA(&huart2,usart_data+1,511);
     __HAL_UART_ENABLE_IT(&huart2,UART_IT_IDLE);
     
   }
   if(__HAL_UART_GET_FLAG(&huart2,UART_FLAG_IDLE)!=0)
   {
-    usart_reflag1=1;
+    //usart_reflag1=1;
+		xSemaphoreGiveFromISR(UsartISRTask_semHandle,NULL);
 		HAL_UART_AbortReceive(&huart2);
 		__HAL_UART_CLEAR_IDLEFLAG(&huart2);
     __HAL_UART_DISABLE_IT(&huart2,UART_IT_IDLE);

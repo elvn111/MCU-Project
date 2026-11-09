@@ -64,8 +64,9 @@ super project\main.o: ../Core/Inc/tim.h
 super project\main.o: ../Core/Inc/usart.h
 super project\main.o: ../Core/Inc/gpio.h
 super project\main.o: ../Core/Inc/rtc.h
+super project\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
+super project\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 super project\main.o: ./Hardware/OLED.h
 super project\main.o: ./Hardware/IIC_Hardware.h
 super project\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 super project\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
-super project\main.o: ./Hardware/ESP_01.h

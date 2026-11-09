@@ -25,6 +25,8 @@
 /* USER CODE BEGIN Includes */
 #include "OLED.h"
 #include "ELVNRTOS.h"
+#include "I2C.h"
+#include "Car.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -96,23 +98,43 @@ int main(void)
   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_4,GPIO_PIN_RESET);
   OLED_Init();
   /* USER CODE BEGIN 2 */
+  I2C_Init();
 
   /* USER CODE END 2 */
   OLED_ShowNum(1,7,ELVNRTOS_Init(),4);
   ETask_Creat(Task1,9,256);
-  HAL_SuspendTick();
+  //HAL_SuspendTick();
 
-  ETask_StartScheduler();
+  //ETask_StartScheduler();
   //ELVNRTOS_EnterRTOS();
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   int i=0;
+  int angle=0;
+  int count=0;
+  int count1=0;
+  int frames=0;
+  int fps=0;
+  uint32_t last_tick = HAL_GetTick();
   while (1)
   {
     /* USER CODE END WHILE */
-    OLED_ShowNum(1,1,i++,10);
-    OLED_ShowNum(2,1,__get_PSP(),10);
-    OLED_ShowNum(3,1,__get_MSP(),10);
+    frames++;
+    if (HAL_GetTick() - last_tick >= 500) {
+        fps = frames * 1000 / (HAL_GetTick() - last_tick);
+        frames = 0;
+        last_tick = HAL_GetTick();
+    }
+    OLED_DrawClear(0, 0, 128, 64);
+    OLED3D_DrawACar(64, 100, 51, 2, angle, angle, angle, OLED_White);
+    angle=(angle+1)%360;
+    //OLED_DrawClear(0, 0, 31, 15);
+    OLED_DrawANum(0, 0, fps, 3, OLED_White);
+    //OLED_ShowPicture(0, 0, 31, 15);
+    OLED_ShowPicture(0, 0, 128, 64);
+    // OLED_ShowNum(1,1,i++,10);
+    // OLED_ShowNum(2,1,__get_PSP(),10);
+    // OLED_ShowNum(3,1,__get_MSP(),10);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

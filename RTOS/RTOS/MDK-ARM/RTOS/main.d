@@ -24,6 +24,7 @@ rtos\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma_ex.h
 rtos\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h
 rtos\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h
 rtos\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
+rtos\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h
 rtos\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 rtos\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 rtos\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
@@ -35,3 +36,5 @@ rtos\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 rtos\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 rtos\main.o: .\User\ELVNRTOS.h
 rtos\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+rtos\main.o: .\Hardware\I2C.h
+rtos\main.o: .\Hardware\Car.h

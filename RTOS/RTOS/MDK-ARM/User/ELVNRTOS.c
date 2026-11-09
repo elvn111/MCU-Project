@@ -12,6 +12,8 @@
 extern TIM_HandleTypeDef htim1;
 
 
+
+
 typedef enum {
     TASK_STATE_READY = 0,
     TASK_STATE_SUSPENDED = 9999
@@ -30,9 +32,22 @@ static TaskControlBlock* ready_head[PRIORITY_COUNT]={0};   /* 各优先级队列
 static TaskControlBlock* ready_tail[PRIORITY_COUNT]={0};   /* 各优先级队列尾指针 */
 static uint16_t  ready_count[PRIORITY_COUNT];  /* 各优先级队列节点计数 */
 static uint16_t  ready_total = 0;              /* 全部队列节点总数 */
-uint16_t Task_ID = 0;
+static uint16_t Task_ID = 0;
+
+uint8_t scheduler_state=1;
 
 TaskControlBlock * Task_Current_TCB;
+
+void turn_off_Scheduler(void)
+{
+    scheduler_state=0;
+}
+
+void turn_on_Scheduler(void)
+{
+    scheduler_state=1;
+}
+
 
 //时间片轮转绑定于定时器
 void TIM1_UP_IRQHandler(void)
@@ -401,40 +416,42 @@ void ETask_Scheduler(void){
         }
         task_delete = NULL;
     }
-    for(int i=0;i<PRIORITY_COUNT;i++){
-        if(ready_head[i]){
-            task=ready_head[i];
-            for (task = ready_head[i]; task != NULL; task = task->next){
-                if(task->next==0&&task!=ready_head[i]) break;
-                if(task->state!=TASK_STATE_READY&&task->state!=TASK_STATE_SUSPENDED)task->state--;
+    if(scheduler_state){
+        for(int i=0;i<PRIORITY_COUNT;i++){
+            if(ready_head[i]){
+                task=ready_head[i];
+                for (task = ready_head[i]; task != NULL; task = task->next){
+                    if(task->next==0&&task!=ready_head[i]) break;
+                    if(task->state!=TASK_STATE_READY&&task->state!=TASK_STATE_SUSPENDED)task->state--;
+                }
             }
         }
-    }
-    for(int i=PRIORITY_COUNT-1;i>=0;i--){
-        if(ready_head[i]){
-            task=ready_head[i];
-            for (task = ready_head[i]; task != NULL; task = task->next){
-                if(task->state==TASK_STATE_READY){
-                    Task_Current_TCB=task;
-                    if(task==ready_head[i]){
-                        task->prev=ready_tail[i];
-                        ready_tail[i]->next=task;
-                        ready_head[i]=task->next;
-                        ready_tail[i]=task;
-                        task->next=0;
-                        ready_head[i]->prev=0;
+        for(int i=PRIORITY_COUNT-1;i>=0;i--){
+            if(ready_head[i]){
+                task=ready_head[i];
+                for (task = ready_head[i]; task != NULL; task = task->next){
+                    if(task->state==TASK_STATE_READY){
+                        Task_Current_TCB=task;
+                        if(task==ready_head[i]){
+                            task->prev=ready_tail[i];
+                            ready_tail[i]->next=task;
+                            ready_head[i]=task->next;
+                            ready_tail[i]=task;
+                            task->next=0;
+                            ready_head[i]->prev=0;
+                        }
+                        else if (task != ready_tail[i]) {
+                            reg = task->prev;
+                            reg->next = task->next;       /* 前驱跳过 task */
+                            task->next->prev = reg;       /* ← 补这句：后继的 prev 指回前驱 */
+                            ready_tail[i]->next = task;   /* 挂到队尾 */
+                            task->prev = ready_tail[i];
+                            task->next = 0;
+                            ready_tail[i] = task;
+                        }
+                        TIM1->CR1 |= TIM_CR1_CEN;
+                        return;
                     }
-                    else if (task != ready_tail[i]) {
-                        reg = task->prev;
-                        reg->next = task->next;       /* 前驱跳过 task */
-                        task->next->prev = reg;       /* ← 补这句：后继的 prev 指回前驱 */
-                        ready_tail[i]->next = task;   /* 挂到队尾 */
-                        task->prev = ready_tail[i];
-                        task->next = 0;
-                        ready_tail[i] = task;
-                    }
-                    TIM1->CR1 |= TIM_CR1_CEN;
-                    return;
                 }
             }
         }

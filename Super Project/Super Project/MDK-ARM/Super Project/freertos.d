@@ -72,3 +72,4 @@ super project\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/eve
 super project\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
 super project\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 super project\freertos.o: ../Core/Inc/rtc.h
+super project\freertos.o: ./Hardware/dsp.h

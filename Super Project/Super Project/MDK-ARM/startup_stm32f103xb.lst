@@ -467,10 +467,11 @@ M32F1xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/incl
 ude -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares
 /Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I../Drivers/CMSIS/Device/ST
 /STM32F1xx/Include -I../Drivers/CMSIS/Include -I.\RTE\_Super_Project -IC:\Keil_
-v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include -IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_
-DFP\2.2.0\Device\Include --predefine="__MICROLIB SETA 1" --predefine="__UVISION
-_VERSION SETA 524" --predefine="_RTE_ SETA 1" --predefine="STM32F10X_MD SETA 1"
- --list=startup_stm32f103xb.lst startup_stm32f103xb.s
+v5\ARM\PACK\ARM\CMSIS\5.8.0\CMSIS\Core\Include -IC:\Keil_v5\ARM\PACK\Keil\STM32
+F1xx_DFP\2.2.0\Device\Include --predefine="__MICROLIB SETA 1" --predefine="__UV
+ISION_VERSION SETA 536" --predefine="_RTE_ SETA 1" --predefine="STM32F10X_MD SE
+TA 1" --predefine="_RTE_ SETA 1" --list=startup_stm32f103xb.lst startup_stm32f1
+03xb.s
 
 
 

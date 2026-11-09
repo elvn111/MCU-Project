@@ -37,6 +37,7 @@
 #include "timers.h"
 #include <string.h>
 #include "rtc.h"
+#include "dsp.h"
 
 #define UPDATEFLAGE 7891
 #define TIME_DISPLAY_BIT (1 << 16)
@@ -53,7 +54,7 @@ EventGroupHandle_t EventGroupHandle;
 osThreadId_t UsartTaskHandle;
 const osThreadAttr_t UsartTask_attributes = {
   .name = "UsartTask",
-  .stack_size = 128 * 2,
+  .stack_size = 128 * 8,
   .priority = (osPriority_t) osPriorityNormal,
 };
 
@@ -116,6 +117,11 @@ osSemaphoreId_t ADCTask_semHandle;
 const osSemaphoreAttr_t ADCTask_sem_attributes = {
   .name = "ADCTask_sem"
 };
+
+osSemaphoreId_t UsartISRTask_semHandle;
+const osSemaphoreAttr_t UsartISRTask_sem_attributes = {
+  .name = "UsartISRTask_sem"
+};
 /* Definitions for MPUTask_sem */
 osSemaphoreId_t MPUTask_semHandle;
 const osSemaphoreAttr_t MPUTask_sem_attributes = {
@@ -152,8 +158,8 @@ const osSemaphoreAttr_t KeyBoard_sem_attributes = {
   .name = "KeyBoard_sem"
 };
 
-extern uint8_t usart_data[128];
-extern uint8_t usart_data1[128];
+extern uint8_t usart_data[512];
+extern uint8_t usart_data1[512];
 
 void StartInitTask(void *argument);
 void OLED_SelectTask(void *argument);
@@ -176,6 +182,7 @@ void MX_FREERTOS_Init(void) {
   ADCTask_semHandle = osSemaphoreNew(1, 1, &ADCTask_sem_attributes);
   MPUTask_semHandle = osSemaphoreNew(1, 1, &MPUTask_sem_attributes);
   SELTask_semHandle = osSemaphoreNew(1, 1, &SELTask_sem_attributes);
+	UsartISRTask_semHandle = osSemaphoreNew(1, 1, &UsartISRTask_sem_attributes);
   TimeDisplayTask_semHandle= osSemaphoreNew(1, 1, &TimeDisplayTask_sem_attributes);
   KeyBoard_semHandle = osSemaphoreNew(1, 1, &KeyBoard_sem_attributes);
   InitTaskHandle = osThreadNew(StartInitTask, NULL, &InitTask_attributes);
@@ -199,6 +206,7 @@ void StartInitTask(void *argument)
   xSemaphoreTake(UsartTask_semHandle,0);
   xSemaphoreTake(ADCTask_semHandle,0);
   xSemaphoreTake(MPUTask_semHandle,0);
+	xSemaphoreTake(UsartISRTask_semHandle,0);
 	xSemaphoreGive(SELTask_semHandle);
   xSemaphoreTake(TimeDisplayTask_semHandle,0);
   xSemaphoreTake(KeyBoard_semHandle, 0); // 阻塞等待KeyBoard信号量
@@ -389,7 +397,7 @@ void MPU_Task(void *argument){
 }
 
 /**
-* @brief 按键扫描任务
+* @brief 按键扫描任务 唯一不死任务
 * @param argument: Not used
 * @retval None
 */
@@ -398,13 +406,15 @@ extern uint8_t usart_reflag1;
 void Button_ReadTask(void *argument){
   for(;;){
     ReadKeyTask();
-    if(usart_reflag==1){
-      memset(usart_data1,0x00,128);
-      usart_reflag=0;
-    }
-    else if(usart_reflag1==1){
-      memcpy(usart_data1,usart_data,128);
-      memset(usart_data,0x00,128);
+//    if(usart_reflag==1){
+//      memset(usart_data1,0x00,512);
+//      usart_reflag=0;
+//    }
+    //else 
+		//xSemap(USARTTask_semHandle,0);
+		if(xSemaphoreTake(UsartISRTask_semHandle,0)){
+      memcpy(usart_data1,usart_data,512);
+      memset(usart_data,0x00,512);
       usart_reflag1=0;
     }
     //HAL_IWDG_Refresh(&hiwdg);
@@ -421,12 +431,27 @@ void Usart_Task(void *argument){
   uint16_t Key_num1;
   for(;;){
     xSemaphoreTake(UsartTask_semHandle,portMAX_DELAY);
+		GPS_Module_Info GPS_Info;
     Key_num1=0;
     Key_num1=xEventGroupWaitBits(EventGroupHandle,8,pdTRUE,pdFALSE,0);
-		OLED_ShowRowString(1,1,(char *)usart_data1+1);
-    OLED_ShowRowString(2,1,(char *)usart_data1+16);
-    OLED_ShowRowString(3,1,(char *)usart_data1+31);
-    OLED_ShowNum(4,1,*((uint16_t *)PARAMETERADDRESS),5);
+//		OLED_ShowRowString(1,1,(char *)usart_data1+1);
+//    OLED_ShowRowString(2,1,(char *)usart_data1+16);
+//    OLED_ShowRowString(3,1,(char *)usart_data1+31);
+//    OLED_ShowNum(4,1,*((uint16_t *)PARAMETERADDRESS),5);
+		//printf("error\n");
+		//printf((const char *)usart_data1+1);
+		if(GPS_Info_RSL((char *)usart_data1+1,&GPS_Info)){
+			printf("latitude:%f\n",GPS_Info.latitude);
+			printf("longitude:%f\n",GPS_Info.longitude);
+			printf("ElpHeight:%f\n",GPS_Info.ElpHeight);
+			printf("Heading_Angle:%f\n",GPS_Info.Heading_Angle);
+			printf("Baseline:%f\n",GPS_Info.Baseline);
+			printf("GPS_Satellite:%d\n",GPS_Info.GPS_Satellite);
+		}
+		else{
+			printf("error\n");
+		}
+		
 		if(Key_num1&8){
 			OLED_Clear();
 			xSemaphoreGive(SELTask_semHandle);
